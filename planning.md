@@ -1,7 +1,21 @@
 ## Music Playlist Explorer — Planning Spec
 
 ### Data Shape
-[Leave blank — fill in before Milestone 3]
+
+#### Playlist Object
+- `playlistID` (number) — unique identifier for the playlist
+- `playlist_name` (string) — display name of the playlist
+- `playlist_creator` (string) — name of the person who created the playlist
+- `playlist_art` (string) — URL or path to the playlist cover image
+- `likeCount` (number) — number of likes the playlist has received
+- `songs` (array of song objects) — collection of songs in this playlist
+
+#### Song Object
+- `id` (number) — unique identifier for the song
+- `title` (string) — name of the song
+- `artist` (string) — name of the artist who performed the song
+- `album` (string) — name of the album the song belongs to
+- `duration` (string) — length of the song in MM:SS format
 
 ### UI and Interaction Rules
 homepage
