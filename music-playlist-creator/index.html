@@ -11,16 +11,56 @@
 </head>
 <body>
     <header>
-        <!-- Your header content here -->
+        <nav class="navbar">
+            <h1>Music Playlist Explorer</h1>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">All Playlists</a>
+                <a href="featured.html" class="nav-link">Featured</a>
+            </div>
+        </nav>
     </header>
 
-    <main> 
-        <!-- Your main content here -->
+    <main>
+        <div class="playlist-cards">
+            <!-- Sample playlist card -->
+            <div class="playlist-card" data-playlist-id="1">
+                <img src="assets/img/playlist.png" alt="Chill Vibes playlist cover" class="playlist-cover">
+                <div class="playlist-info">
+                    <h3 class="playlist-name">Chill Vibes</h3>
+                    <p class="playlist-author">Alex Johnson</p>
+                    <div class="playlist-likes">
+                        <span class="heart-icon">♡</span>
+                        <span class="like-count">42</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer>
-        <!-- Your footer content here -->
+        <p>&copy; 2026 Music Playlist Explorer</p>
     </footer>
+
+    <!-- Modal structure -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <img src="" alt="Playlist cover" class="modal-cover" id="modalCover">
+                <div class="modal-info">
+                    <h2 class="modal-playlist-name" id="modalPlaylistName"></h2>
+                    <p class="modal-playlist-author" id="modalPlaylistAuthor"></p>
+                    <div class="modal-actions">
+                        <button class="shuffle-btn" id="shuffleBtn">🔀 Shuffle</button>
+                        <button class="description-btn" id="descriptionBtn">Get Description</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-songs" id="modalSongs">
+                <!-- Songs will be populated here -->
+            </div>
+        </div>
+    </div>
     <script src="data/data.js"></script>
     <script src="script.js"></script>
 </body>
