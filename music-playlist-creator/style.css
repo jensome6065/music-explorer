@@ -254,3 +254,42 @@ footer p {
 .modal-songs {
     margin-top: 1.5rem;
 }
+
+.song-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.song-item:hover {
+    background-color: #f8f8f8;
+}
+
+.song-item:last-child {
+    border-bottom: none;
+}
+
+.song-info {
+    flex: 1;
+}
+
+.song-title {
+    font-weight: 500;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.song-details {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.song-duration {
+    font-size: 0.875rem;
+    color: #666;
+    margin-left: 1rem;
+}

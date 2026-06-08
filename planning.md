@@ -45,7 +45,92 @@ website should be
 - modern
 
 ### Function Specs
-[Add function specs here as you plan each milestone]
+
+#### `renderPlaylistCards(playlists)`
+**Purpose:** Dynamically creates and displays playlist cards on the homepage.
+
+**Inputs:**
+- `playlists` (array of playlist objects) — the array of playlists to render
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- DOM effect: appends playlist card elements to the `.playlist-cards` container
+- Side effect: clears existing content in `.playlist-cards` before rendering
+
+**Data Used from Playlist Object:**
+- `playlistID` — set as `data-playlist-id` attribute on the card
+- `playlist_art` — used for the cover image `src`
+- `playlist_name` — displayed as the card title and image alt text
+- `playlist_creator` — displayed as the author/creator name
+- `likeCount` — displayed as the number next to the heart icon
+
+**Behavior:**
+- If the `playlists` array is empty, displays a "No playlists found" message
+- Each card should have the class `playlist-card` and be clickable
+- Heart icon should be empty/outlined (♡) initially
+
+---
+
+#### `populateModal(playlist)`
+**Purpose:** Populates the modal with detailed information about a specific playlist.
+
+**Inputs:**
+- `playlist` (playlist object) — the playlist to display in the modal
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- DOM effect: updates multiple elements within the modal structure
+- Does NOT open the modal (that's handled separately)
+
+**DOM Elements Updated:**
+- `#modalCover` — set `src` to `playlist.playlist_art` and `alt` to playlist name
+- `#modalPlaylistName` — set text content to `playlist.playlist_name`
+- `#modalPlaylistAuthor` — set text content to `playlist.playlist_creator`
+- `#modalSongs` — populate with a list of song elements from `playlist.songs` array
+
+**Song List Structure:**
+Each song should display:
+- Song title (bold/prominent)
+- Artist name
+- Album name
+- Duration
+
+**Expected Modal State After Execution:**
+- Modal header shows playlist cover image and metadata
+- Song list is fully populated with all songs from the playlist
+- All text fields are populated (no empty elements)
+- If playlist has no songs, display "No songs in this playlist"
+
+---
+
+#### `openModal(playlistID)`
+**Purpose:** Opens the modal and displays the playlist with the given ID.
+
+**Inputs:**
+- `playlistID` (number) — the ID of the playlist to display
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- Finds the playlist in the global `playlists` array
+- Calls `populateModal()` with the found playlist
+- Adds `.active` class to `.modal-overlay` to make it visible
+
+**Behavior:**
+- If playlist with given ID is not found, log error and do not open modal
+
+---
+
+#### `closeModal()`
+**Purpose:** Closes the modal and hides it from view.
+
+**Inputs:** None
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- Removes `.active` class from `.modal-overlay` to hide it
+
+**Behavior:**
+- Can be called even if modal is already closed (idempotent)
 
 ### AI Feature Spec (Milestone 8)
 [Leave blank — fill in before Milestone 8]
@@ -101,3 +186,52 @@ website should be
 - Navigation links: subtle hover background (`rgba(255, 255, 255, 0.1)`)
 - Active nav link: slightly stronger background (`rgba(255, 255, 255, 0.2)`)
 - Buttons: distinct colors, darken on hover for feedback
+
+#### MILESTONE 3
+
+**Data Management:**
+- Created `data/data.json` containing array of playlist objects
+- All playlist objects match the defined schema exactly
+- Used `fetch()` API to load JSON asynchronously
+- Global `playlists` array stores loaded data
+
+**Implementation Approach:**
+- Separated concerns: `loadPlaylists()` handles data fetching, `renderPlaylistCards()` handles rendering, `createPlaylistCard()` creates individual cards
+- Error handling: try/catch for fetch failures with user-friendly error message
+- Empty state: "No playlists found" message when array is empty
+
+**DOM Manipulation:**
+- Removed hard-coded sample card from HTML
+- Container cleared before each render to prevent duplicates
+- Each card created with `createElement()` and `innerHTML` for template
+- `data-playlist-id` attribute set for future interactions
+
+---
+
+#### MILESTONE 4
+
+**Modal Population Strategy:**
+- Separated concerns: `populateModal()` handles data → DOM, `openModal()` handles visibility
+- `createSongElement()` helper function generates individual song items
+- Modal population happens before modal is shown (ensures smooth appearance)
+
+**Event Handling Approach:**
+- Event delegation: Single click listener on document for all playlist cards (efficient, works with dynamic content)
+- Overlay click: Checks `e.target === modalOverlay` to only close when clicking outside content
+- Close button: Direct event listener on `#modalClose`
+
+**Song List Design:**
+- Each song item displays: title (bold), artist + album (secondary text), duration (right-aligned)
+- Hover effect on song items for interactivity feedback
+- Border between items, removed on last item for clean appearance
+- Empty state: Shows message if playlist has no songs
+
+**DOM Updates:**
+- Modal content cleared and repopulated each time
+- Uses `innerHTML` for efficiency when replacing all songs at once
+- All modal fields updated (cover, name, creator, songs) to ensure consistency
+
+**User Experience:**
+- Modal can be closed multiple ways (overlay click, close button) for flexibility
+- Clicking anywhere on a card opens the modal (not just specific elements)
+- Modal prevents click-through: overlay click check ensures content clicks don't close modal
