@@ -86,7 +86,27 @@
         <p>&copy; 2026 Music Playlist Explorer</p>
     </footer>
 
-    <!-- Modal structure -->
+    <!-- Floating Add Button -->
+    <button class="fab" id="addPlaylistFab" aria-label="Add new playlist">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+    </button>
+
+    <!-- Confirmation Modal -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-dialog">
+            <h3 class="confirm-title" id="confirmTitle">Delete Playlist?</h3>
+            <p class="confirm-message" id="confirmMessage"></p>
+            <div class="confirm-actions">
+                <button class="confirm-btn cancel-btn" id="confirmCancel">Cancel</button>
+                <button class="confirm-btn delete-btn" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist Modal structure -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -109,9 +129,75 @@
             </div>
         </div>
     </div>
+
+    <!-- Add/Edit Playlist Form Modal -->
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-modal">
+            <button class="modal-close" id="formClose">&times;</button>
+            <h2 class="form-title" id="formTitle">Add New Playlist</h2>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Details</span>
+                </div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Songs</span>
+                </div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Preview</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Playlist Details -->
+            <div class="form-step active" id="step1">
+                <div class="form-group">
+                    <label for="playlistName">Playlist Name *</label>
+                    <input type="text" id="playlistName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="playlistCreator">Creator Name *</label>
+                    <input type="text" id="playlistCreator" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="playlistCover">Cover Image URL *</label>
+                    <input type="url" id="playlistCover" class="form-input" placeholder="https://..." required>
+                </div>
+            </div>
+
+            <!-- Step 2: Add Songs -->
+            <div class="form-step" id="step2">
+                <div id="songsContainer"></div>
+                <button type="button" class="add-song-btn" id="addSongBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Song
+                </button>
+            </div>
+
+            <!-- Step 3: Preview -->
+            <div class="form-step" id="step3">
+                <div class="preview-content" id="previewContent"></div>
+            </div>
+
+            <!-- Form Navigation -->
+            <div class="form-nav">
+                <button type="button" class="form-nav-btn secondary" id="prevBtn" style="display: none;">Previous</button>
+                <button type="button" class="form-nav-btn primary" id="nextBtn">Next</button>
+                <button type="button" class="form-nav-btn primary" id="submitBtn" style="display: none;">Save Playlist</button>
+            </div>
+        </div>
+    </div>
+
     <script src="theme.js"></script>
     <script src="secrets.js"></script>
     <script src="shared.js"></script>
     <script src="script.js"></script>
+    <script src="playlist-manager.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 let playlists = [];
-let currentSort = 'likes'; // Default sort
+let currentSort = 'likes';
 
 function createSkeletonCard() {
     const skeleton = document.createElement('div');
@@ -33,7 +33,6 @@ async function loadPlaylists() {
 
         await new Promise(resolve => setTimeout(resolve, 300));
 
-        // Apply default sort on initial load
         const sortedPlaylists = sortPlaylists(playlists, currentSort);
         renderPlaylistCards(sortedPlaylists);
     } catch (error) {
@@ -58,19 +57,61 @@ function renderPlaylistCards(playlists) {
     });
 }
 
+function calculateTotalDuration(songs) {
+    if (!songs || songs.length === 0) return '0:00';
+
+    let totalSeconds = 0;
+    songs.forEach(song => {
+        const parts = song.duration.split(':');
+        const minutes = parseInt(parts[0]) || 0;
+        const seconds = parseInt(parts[1]) || 0;
+        totalSeconds += (minutes * 60) + seconds;
+    });
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 function createPlaylistCard(playlist) {
     const card = document.createElement('div');
     card.className = 'playlist-card';
     card.setAttribute('data-playlist-id', playlist.playlistID);
 
+    const totalDuration = calculateTotalDuration(playlist.songs);
+    const songCount = playlist.songs ? playlist.songs.length : 0;
+
     card.innerHTML = `
+        <button class="card-delete-btn" data-playlist-id="${playlist.playlistID}" aria-label="Delete playlist">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+        <button class="card-edit-btn" data-playlist-id="${playlist.playlistID}" aria-label="Edit playlist">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+        </button>
         <img src="${playlist.playlist_art}" alt="${playlist.playlist_name} playlist cover" class="playlist-cover">
         <div class="playlist-info">
             <h3 class="playlist-name">${playlist.playlist_name}</h3>
-            <p class="playlist-author">${playlist.playlist_creator}</p>
-            <div class="playlist-likes">
-                <span class="heart-icon">♡</span>
-                <span class="like-count">${playlist.likeCount}</span>
+            <div class="playlist-bottom">
+                <div class="playlist-meta">
+                    <span class="playlist-duration">${totalDuration}</span>
+                    <span class="playlist-dot">•</span>
+                    <span class="playlist-count">${songCount} ${songCount === 1 ? 'song' : 'songs'}</span>
+                </div>
+                <div class="playlist-likes">
+                    <span class="heart-icon">♡</span>
+                    <span class="like-count">${playlist.likeCount}</span>
+                </div>
             </div>
         </div>
     `;
