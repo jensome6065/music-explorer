@@ -215,6 +215,69 @@ When a user clicks a liked heart icon:
 - All song information remains intact (title, artist, album, duration)
 - Visual feedback: songs appear in different positions
 
+---
+
+#### `selectRandomPlaylist(playlists)`
+**Purpose:** Selects a random playlist from the playlists array.
+
+**Inputs:**
+- `playlists` (array of playlist objects) — the array to select from
+
+**Outputs:**
+- Returns: a single randomly selected playlist object
+- Returns `null` if array is empty or undefined
+
+**Behavior:**
+- Uses `Math.random()` to select random index
+- Each playlist has equal probability of being selected
+- Called on page load/refresh to ensure new selection each time
+
+---
+
+#### `displayFeaturedPlaylist(playlist)`
+**Purpose:** Displays the featured playlist details on the Featured page.
+
+**Inputs:**
+- `playlist` (playlist object) — the playlist to display
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- DOM effect: updates featured playlist section with cover, name, creator, and songs
+
+**DOM Elements Updated:**
+- `#featuredCover` — large featured playlist cover image
+- `#featuredPlaylistName` — playlist name (large heading)
+- `#featuredCreator` — playlist creator name
+- `#featuredSongs` — song list container (all songs displayed)
+
+**Layout:**
+- Left side: Large playlist cover + name + creator
+- Right side: Full song list with all details
+
+### Featured Page Layout
+
+**Structure:**
+- Same header and footer as All Playlists page for consistency
+- Main content split into two sections:
+  - **Left panel (40%):** Large featured playlist cover image, playlist name (large heading), creator name
+  - **Right panel (60%):** Complete song list with title, artist, album, duration
+
+**Navigation:**
+- Navigation bar in header contains links to:
+  - "All Playlists" (index.html)
+  - "Featured" (featured.html)
+- Active link indicates current page
+- Same navigation appears on both pages for consistency
+
+**Random Selection Behavior:**
+- On each page load or refresh, new random playlist is selected
+- Random selection happens automatically (no user action required)
+- Each playlist has equal chance of being featured
+
+**Responsive Behavior:**
+- Two-column layout on desktop
+- Stack vertically on mobile (cover on top, songs below)
+
 ### AI Feature Spec (Milestone 8)
 [Leave blank — fill in before Milestone 8]
 
@@ -346,8 +409,7 @@ When a user clicks a liked heart icon:
 
 ---
 
-#### MILESTONE 6: Shuffle Functionality
-**Date:** 2026-06-08
+#### MILESTONE 6
 
 **Shuffle Algorithm:**
 - Fisher-Yates shuffle for true randomness (unbiased distribution)
@@ -378,3 +440,52 @@ When a user clicks a liked heart icon:
 - Immediate visual feedback: songs jump to new positions
 - Works on playlists of any size (including edge cases: 0, 1, 2+ songs)
 - Original order always recoverable (just close and reopen modal)
+
+---
+
+#### MILESTONE 7
+
+**Page Structure:**
+- Created separate `featured.html` file with own JavaScript (`featured.js`)
+- Reuses existing `style.css` for consistency
+- Same header/footer structure as All Playlists page
+
+**Layout Design:**
+- Two-column grid layout: 40% left (cover + metadata), 60% right (song list)
+- Left panel uses `position: sticky` to keep cover visible while scrolling songs
+- Large, prominent cover image (max 400px, square aspect ratio)
+- Right panel: white card with rounded corners, contains song list
+- "Songs" heading with purple underline for visual hierarchy
+
+**Random Selection Implementation:**
+- `selectRandomPlaylist()` uses `Math.random()` for equal probability
+- Called automatically on page load (DOMContentLoaded)
+- Each page load/refresh generates new random selection
+- Returns `null` for empty array (graceful handling)
+
+**Code Reuse:**
+- Created `shared.js` for common utilities
+- `createSongElement()` extracted to `shared.js` (used by both `script.js` and `featured.js`)
+- Both HTML pages load `shared.js` before their page-specific scripts
+- Eliminates code duplication while maintaining independence of page logic
+- Same song item structure and styling across all pages
+- Consistent data loading pattern with error handling
+
+**Navigation:**
+- Both pages have identical navigation bars
+- `.active` class indicates current page
+- Purple background on active link for visual feedback
+- Users can freely navigate between pages
+
+**Responsive Design:**
+- Desktop: side-by-side layout (grid 40/60)
+- Mobile (< 768px): stacked layout (cover on top, songs below)
+- Cover size adjusts on mobile (300px max)
+- Left panel loses sticky positioning on mobile for better flow
+
+**User Experience:**
+- Fresh random playlist every time user visits Featured page
+- Large cover image for visual impact
+- Sticky cover keeps playlist identity visible while browsing songs
+- Clean, focused presentation (no cards, no modals, no interactions)
+- Consistent typography and spacing with rest of app

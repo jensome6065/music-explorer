@@ -106,21 +106,6 @@ function populateModal(playlist) {
     });
 }
 
-function createSongElement(song) {
-    const songDiv = document.createElement('div');
-    songDiv.className = 'song-item';
-
-    songDiv.innerHTML = `
-        <div class="song-info">
-            <div class="song-title">${song.title}</div>
-            <div class="song-details">${song.artist} • ${song.album}</div>
-        </div>
-        <div class="song-duration">${song.duration}</div>
-    `;
-
-    return songDiv;
-}
-
 function openModal(playlistID) {
     const playlist = playlists.find(p => p.playlistID === playlistID);
 
@@ -172,20 +157,18 @@ function setupEventListeners() {
 
     document.getElementById('modalClose').addEventListener('click', closeModal);
 
-    // Shuffle button
     document.getElementById('shuffleBtn').addEventListener('click', handleShuffleClick);
 
     document.addEventListener('click', (e) => {
         const heartIcon = e.target.closest('.heart-icon');
         if (heartIcon) {
-            e.stopPropagation(); // Prevent modal from opening
+            e.stopPropagation();
             const card = heartIcon.closest('.playlist-card');
             const playlistID = parseInt(card.getAttribute('data-playlist-id'));
             toggleLike(playlistID, heartIcon);
             return;
         }
 
-        // Check if playlist card was clicked (but not heart icon)
         const card = e.target.closest('.playlist-card');
         if (card) {
             const playlistID = parseInt(card.getAttribute('data-playlist-id'));
