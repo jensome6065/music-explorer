@@ -52,6 +52,40 @@ function displayMessage(message) {
     container.innerHTML = `<p style="text-align: center; color: #666; font-size: 1.2rem; padding: 2rem;">${message}</p>`;
 }
 
+function shuffleSongs(songs) {
+    if (!songs || songs.length === 0) {
+        return [];
+    }
+
+    const shuffled = [...songs];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
+function handleShuffleClick() {
+    const modalPlaylistName = document.getElementById('modalPlaylistName').textContent;
+    const currentPlaylist = playlists.find(p => p.playlist_name === modalPlaylistName);
+
+    if (!currentPlaylist || !currentPlaylist.songs || currentPlaylist.songs.length === 0) {
+        return;
+    }
+
+    const shuffledSongs = shuffleSongs(currentPlaylist.songs);
+
+    const modalSongs = document.getElementById('modalSongs');
+    modalSongs.innerHTML = '';
+
+    shuffledSongs.forEach(song => {
+        const songElement = createSongElement(song);
+        modalSongs.appendChild(songElement);
+    });
+}
+
 function populateModal(playlist) {
     document.getElementById('modalCover').src = playlist.playlist_art;
     document.getElementById('modalCover').alt = playlist.playlist_name;
@@ -137,6 +171,9 @@ function setupEventListeners() {
     });
 
     document.getElementById('modalClose').addEventListener('click', closeModal);
+
+    // Shuffle button
+    document.getElementById('shuffleBtn').addEventListener('click', handleShuffleClick);
 
     document.addEventListener('click', (e) => {
         const heartIcon = e.target.closest('.heart-icon');

@@ -168,6 +168,53 @@ When a user clicks a liked heart icon:
 - State tracked by presence/absence of `.liked` class on heart icon
 - Clicking the heart should NOT open the modal (event propagation stopped)
 
+---
+
+#### `shuffleSongs(songs)`
+**Purpose:** Returns a new array with songs in randomized order (Fisher-Yates shuffle algorithm).
+
+**Inputs:**
+- `songs` (array of song objects) — the original array of songs to shuffle
+
+**Outputs:**
+- Returns: new array with songs in random order
+- Does NOT mutate the original array
+
+**Algorithm:**
+- Uses Fisher-Yates shuffle for true randomness
+- Each shuffle produces a different order (not deterministic)
+
+**Behavior:**
+- If empty array or single song, returns a copy of the input
+- Creates a copy of the input array to avoid mutation
+
+---
+
+#### `handleShuffleClick()`
+**Purpose:** Handles the shuffle button click event in the modal.
+
+**Inputs:** None (reads current modal state)
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- DOM effect: re-renders the song list in the modal with shuffled order
+- Does NOT modify the original playlist data in the `playlists` array
+
+**Original Order Preservation:**
+- Original song order is preserved in the `playlists` array (never modified)
+- Shuffle only affects the current modal display
+- Closing and reopening the modal shows the original order again
+
+**Multi-Shuffle Behavior:**
+- Each click produces a new random shuffle
+- User can shuffle unlimited times
+- Each shuffle is independent (not relative to previous shuffle)
+
+**UI After Shuffling:**
+- Song list in modal re-renders with new order
+- All song information remains intact (title, artist, album, duration)
+- Visual feedback: songs appear in different positions
+
 ### AI Feature Spec (Milestone 8)
 [Leave blank — fill in before Milestone 8]
 
@@ -296,3 +343,38 @@ When a user clicks a liked heart icon:
 - `e.stopPropagation()` prevents modal from opening when clicking heart
 - Event check order: heart icon first (with early return), then card
 - Ensures clicking heart only toggles like, clicking card (except heart) opens modal
+
+---
+
+#### MILESTONE 6: Shuffle Functionality
+**Date:** 2026-06-08
+
+**Shuffle Algorithm:**
+- Fisher-Yates shuffle for true randomness (unbiased distribution)
+- Time complexity: O(n) where n is number of songs
+- Each position has equal probability of containing any song
+
+**Data Immutability:**
+- Original playlist data in `playlists` array is never modified
+- `shuffleSongs()` creates a copy with spread operator `[...songs]`
+- Shuffle only affects the current modal view, not the source data
+- Closing and reopening modal restores original order
+
+**Multi-Shuffle Design:**
+- Each shuffle generates completely new random order
+- Not relative to previous shuffle (always starts from original)
+- Unlimited shuffles allowed
+- Each shuffle is independent (true randomization every time)
+
+**Implementation Approach:**
+- Separated concerns: `shuffleSongs()` is pure function (no side effects), `handleShuffleClick()` handles DOM updates
+- `handleShuffleClick()` identifies current playlist by matching modal title with playlist name
+- Re-uses `createSongElement()` helper for consistency
+- Clears and rebuilds song list (simple, reliable approach)
+
+**User Experience:**
+- Shuffle button in modal next to "Get Description" button
+- Purple theme matches primary action color (#8b5cf6)
+- Immediate visual feedback: songs jump to new positions
+- Works on playlists of any size (including edge cases: 0, 1, 2+ songs)
+- Original order always recoverable (just close and reopen modal)
