@@ -120,6 +120,104 @@ function openModal(playlistID) {
 
 function closeModal() {
     document.getElementById('modalOverlay').classList.remove('active');
+
+    const descriptionDiv = document.getElementById('modalDescription');
+    descriptionDiv.classList.remove('visible', 'loading', 'error');
+    descriptionDiv.textContent = '';
+}
+
+async function getPlaylistDescription(playlist) {
+    // API key is loaded from secrets.js (not committed to git)
+    if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'YOUR_API_KEY_HERE') {
+        console.error('OpenRouter API key not configured');
+        return 'Unable to generate description. API key not configured.';
+    }
+
+    try {
+        const songList = playlist.songs.map(song =>
+            `- ${song.title} by ${song.artist} (from ${song.album})`
+        ).join('\n');
+
+        const prompt = `You are a music curator analyzing a playlist.
+
+Playlist: ${playlist.playlist_name}
+Created by: ${playlist.playlist_creator}
+
+Songs:
+${songList}
+
+Generate a 2-3 sentence description that captures the vibe, mood, and theme of this playlist. Do not list individual songs. Focus on the overall feeling and genre connections.`;
+
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'Content-Type': 'application/json',
+                'HTTP-Referer': window.location.origin,
+                'X-Title': 'Music Playlist Explorer'
+            },
+            body: JSON.stringify({
+                model: 'google/gemma-3-27b-it',
+                messages: [
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('API Error Response:', errorText);
+            throw new Error(`API request failed: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('API Response:', data);
+
+        const description = data.choices?.[0]?.message?.content;
+
+        if (!description || description.trim() === '') {
+            return 'Description unavailable at this time.';
+        }
+
+        return description.trim();
+
+    } catch (error) {
+        console.error('Error generating playlist description:', error);
+        console.error('Error details:', error.message);
+        return 'Unable to generate description. Please try again later.';
+    }
+}
+
+async function handleGetDescriptionClick() {
+    const descriptionDiv = document.getElementById('modalDescription');
+    const descriptionBtn = document.getElementById('descriptionBtn');
+
+    const modalPlaylistName = document.getElementById('modalPlaylistName').textContent;
+    const currentPlaylist = playlists.find(p => p.playlist_name === modalPlaylistName);
+
+    if (!currentPlaylist) {
+        console.error('No playlist currently displayed');
+        return;
+    }
+
+    descriptionDiv.textContent = 'Generating description...';
+    descriptionDiv.classList.remove('error');
+    descriptionDiv.classList.add('visible', 'loading');
+    descriptionBtn.disabled = true;
+
+    const description = await getPlaylistDescription(currentPlaylist);
+
+    descriptionDiv.textContent = description;
+    descriptionDiv.classList.remove('loading');
+
+    if (description.includes('Unable to generate') || description.includes('unavailable')) {
+        descriptionDiv.classList.add('error');
+    }
+
+    descriptionBtn.disabled = false;
 }
 
 function toggleLike(playlistID, heartIcon) {
@@ -158,6 +256,7 @@ function setupEventListeners() {
     document.getElementById('modalClose').addEventListener('click', closeModal);
 
     document.getElementById('shuffleBtn').addEventListener('click', handleShuffleClick);
+    document.getElementById('descriptionBtn').addEventListener('click', handleGetDescriptionClick);
 
     document.addEventListener('click', (e) => {
         const heartIcon = e.target.closest('.heart-icon');

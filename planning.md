@@ -254,6 +254,51 @@ When a user clicks a liked heart icon:
 - Left side: Large playlist cover + name + creator
 - Right side: Full song list with all details
 
+---
+
+#### `getPlaylistDescription(playlist)`
+**Purpose:** Calls OpenRouter API to generate an AI-powered description for a playlist.
+
+**Inputs:**
+- `playlist` (playlist object) — the playlist to describe
+
+**Outputs:**
+- Returns: Promise that resolves to description string or error message
+- Async function (uses `await`)
+
+**API Details:**
+- Endpoint: `https://openrouter.ai/api/v1/chat/completions`
+- Model: `google/gemma-2-9b-it:free` (free OpenRouter model)
+  - Alternative free models: `meta-llama/llama-3.3-70b-instruct:free`
+- Method: POST
+- Headers: Authorization (Bearer token), Content-Type (application/json)
+- Cost: Free tier (no billing required)
+
+**Prompt Structure:**
+```
+You are a music curator analyzing a playlist.
+
+Playlist: {playlist_name}
+Created by: {playlist_creator}
+
+Songs:
+- {song.title} by {song.artist} (from {song.album})
+[... for each song]
+
+Generate a 2-3 sentence description that captures the vibe, mood, and theme of this playlist. Do not list individual songs. Focus on the overall feeling and genre connections.
+```
+
+**Error Handling:**
+- Network error: Return fallback message from AI Feature Spec
+- Invalid response: Return fallback message
+- Empty response: Return fallback message
+- Log all errors to console with details
+
+**Behavior:**
+- Does NOT update DOM directly (caller handles that)
+- Pure function pattern: takes input, returns output
+- All errors handled gracefully (no exceptions thrown to caller)
+
 ### Featured Page Layout
 
 **Structure:**
@@ -279,7 +324,44 @@ When a user clicks a liked heart icon:
 - Stack vertically on mobile (cover on top, songs below)
 
 ### AI Feature Spec (Milestone 8)
-[Leave blank — fill in before Milestone 8]
+
+**Role:**
+The AI acts as a music curator and playlist analyst who understands music genres, vibes, and thematic connections between songs.
+
+**Task:**
+Generate a 2-3 sentence description for a music playlist that captures its overall vibe, mood, and theme based on the playlist name, creator, and list of songs (titles, artists, albums).
+
+**Inputs:**
+- Playlist name (string)
+- Playlist creator (string)
+- Array of songs, each containing:
+  - Song title
+  - Artist name
+  - Album name
+
+**Output Format:**
+- 2-3 concise sentences
+- Should capture the vibe/mood/theme of the playlist
+- Written in engaging, natural language (not marketing copy)
+- Should feel personal and specific to this playlist
+
+**Constraints:**
+- DO NOT list individual songs by name
+- DO NOT use generic marketing language ("perfect for any occasion", "you'll love this")
+- DO NOT mention the number of songs in the playlist
+- DO NOT be overly formal or technical
+- Should focus on the emotional tone, genre, or themes connecting the songs
+
+**Failure Behavior:**
+- If API call fails: Display "Unable to generate description. Please try again later."
+- If model returns empty/invalid response: Display "Description unavailable at this time."
+- Show error in the same location where description would appear (don't use alerts)
+- Log error to console for debugging
+
+**Loading State:**
+- Show "Generating description..." text with subtle loading indicator
+- Disable "Get Description" button while loading
+- Replace loading text with description or error message when complete
 
 ### Decisions Log
 

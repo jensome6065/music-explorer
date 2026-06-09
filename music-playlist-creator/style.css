@@ -255,6 +255,35 @@ footer p {
     background-color: #2980b9;
 }
 
+.modal-description {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    border-left: 4px solid #8b5cf6;
+    font-style: italic;
+    color: #555;
+    line-height: 1.6;
+    display: none;
+}
+
+.modal-description.visible {
+    display: block;
+}
+
+.modal-description.loading {
+    display: block;
+    text-align: center;
+    color: #8b5cf6;
+}
+
+.modal-description.error {
+    display: block;
+    background-color: #fee;
+    border-left-color: #e74c3c;
+    color: #c33;
+}
+
 .modal-songs {
     margin-top: 1.5rem;
 }

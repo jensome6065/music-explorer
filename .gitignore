@@ -1,0 +1,12 @@
+# API Keys and Secrets
+music-playlist-creator/secrets.js
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
