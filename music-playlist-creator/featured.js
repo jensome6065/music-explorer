@@ -1,12 +1,10 @@
 let playlists = [];
 
-// Load playlist data
 async function loadPlaylists() {
     try {
         const response = await fetch('data/data.json');
         playlists = await response.json();
 
-        // Select and display a random playlist
         const randomPlaylist = selectRandomPlaylist(playlists);
         if (randomPlaylist) {
             displayFeaturedPlaylist(randomPlaylist);
@@ -19,7 +17,6 @@ async function loadPlaylists() {
     }
 }
 
-// Select a random playlist from the array
 function selectRandomPlaylist(playlists) {
     if (!playlists || playlists.length === 0) {
         return null;
@@ -29,7 +26,6 @@ function selectRandomPlaylist(playlists) {
     return playlists[randomIndex];
 }
 
-// Display the featured playlist
 function displayFeaturedPlaylist(playlist) {
     // Update cover image with fade-in effect
     const coverImg = document.getElementById('featuredCover');
@@ -41,7 +37,6 @@ function displayFeaturedPlaylist(playlist) {
         coverImg.style.opacity = '1';
     };
 
-    // Update playlist name and creator with fade-in
     const nameElement = document.getElementById('featuredPlaylistName');
     const creatorElement = document.getElementById('featuredCreator');
 
@@ -58,7 +53,6 @@ function displayFeaturedPlaylist(playlist) {
         creatorElement.style.opacity = '1';
     }, 200);
 
-    // Populate song list
     const featuredSongs = document.getElementById('featuredSongs');
     featuredSongs.innerHTML = '';
 
@@ -73,11 +67,9 @@ function displayFeaturedPlaylist(playlist) {
     });
 }
 
-// Display a message
 function displayMessage(message) {
     const featuredSongs = document.getElementById('featuredSongs');
     featuredSongs.innerHTML = `<p style="text-align: center; color: #666; font-size: 1.2rem; padding: 2rem;">${message}</p>`;
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', loadPlaylists);

@@ -230,6 +230,124 @@ main {
     }
 }
 
+/* Search Container */
+.search-container {
+    margin-bottom: 2.5rem;
+}
+
+.search-wrapper {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 3rem;
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    border: 2px solid var(--border-color);
+    border-radius: 50px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    stroke: var(--text-tertiary);
+    pointer-events: none;
+    transition: stroke 0.3s ease;
+}
+
+.search-input:focus ~ .search-icon {
+    stroke: #8b5cf6;
+}
+
+.search-clear {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.search-clear svg {
+    stroke: var(--text-secondary);
+}
+
+.search-clear:hover {
+    background: var(--likes-bg);
+}
+
+.search-clear:hover svg {
+    stroke: var(--text-primary);
+}
+
+.search-clear.visible {
+    display: flex;
+}
+
+/* No results message */
+.no-results {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+}
+
+.no-results-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    opacity: 0.3;
+    stroke: var(--text-secondary);
+}
+
+.no-results-text {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.no-results-subtext {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        margin-bottom: 2rem;
+    }
+
+    .search-input {
+        font-size: 0.95rem;
+        padding: 0.875rem 2.75rem 0.875rem 2.75rem;
+    }
+}
+
 /* Playlist Cards Grid */
 .playlist-cards {
     display: grid;

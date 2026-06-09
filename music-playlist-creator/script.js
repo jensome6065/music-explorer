@@ -1,6 +1,5 @@
 let playlists = [];
 
-// Create skeleton loader cards
 function createSkeletonCard() {
     const skeleton = document.createElement('div');
     skeleton.className = 'skeleton-card';
@@ -15,7 +14,6 @@ function createSkeletonCard() {
     return skeleton;
 }
 
-// Show skeleton loaders while loading
 function showSkeletonLoaders(count = 6) {
     const container = document.querySelector('.playlist-cards');
     container.innerHTML = '';
@@ -26,14 +24,12 @@ function showSkeletonLoaders(count = 6) {
 }
 
 async function loadPlaylists() {
-    // Show skeleton loaders immediately
     showSkeletonLoaders();
 
     try {
         const response = await fetch('data/data.json');
         playlists = await response.json();
 
-        // Small delay to ensure smooth transition (prevents flash)
         await new Promise(resolve => setTimeout(resolve, 300));
 
         renderPlaylistCards(playlists);
@@ -81,7 +77,94 @@ function createPlaylistCard(playlist) {
 
 function displayMessage(message) {
     const container = document.querySelector('.playlist-cards');
-    container.innerHTML = `<p style="text-align: center; color: #666; font-size: 1.2rem; padding: 2rem;">${message}</p>`;
+    container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); font-size: 1.2rem; padding: 2rem;">${message}</p>`;
+}
+
+function displayNoResults(searchQuery) {
+    const container = document.querySelector('.playlist-cards');
+    container.innerHTML = `
+        <div class="no-results">
+            <svg class="no-results-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <div class="no-results-text">No playlists found</div>
+            <div class="no-results-subtext">Try searching for "${searchQuery}"</div>
+        </div>
+    `;
+}
+
+function filterPlaylists(searchQuery) {
+    const query = searchQuery.toLowerCase().trim();
+
+    if (query === '') {
+        return playlists;
+    }
+
+    return playlists.filter(playlist => {
+        const name = playlist.playlist_name.toLowerCase();
+
+        if (name.includes(query)) {
+            return true;
+        }
+
+        if (playlist.songs && playlist.songs.length > 0) {
+            return playlist.songs.some(song => {
+                const title = song.title.toLowerCase();
+                const artist = song.artist.toLowerCase();
+                return title.includes(query) || artist.includes(query);
+            });
+        }
+
+        return false;
+    });
+}
+
+function handleSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    const query = searchInput.value;
+
+    if (query.length > 0) {
+        searchClear.classList.add('visible');
+    } else {
+        searchClear.classList.remove('visible');
+    }
+
+    const filteredPlaylists = filterPlaylists(query);
+
+    if (filteredPlaylists.length === 0 && query.length > 0) {
+        displayNoResults(query);
+    } else {
+        renderPlaylistCards(filteredPlaylists);
+    }
+}
+
+function clearSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+
+    searchInput.value = '';
+    searchClear.classList.remove('visible');
+    renderPlaylistCards(playlists);
+    searchInput.focus();
+}
+
+function setupSearchListeners() {
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', handleSearch);
+
+        searchClear.addEventListener('click', clearSearch);
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
+    }
 }
 
 function shuffleSongs(songs) {
@@ -238,13 +321,13 @@ async function handleGetDescriptionClick() {
     descriptionDiv.classList.remove('error');
     descriptionDiv.classList.add('visible', 'loading');
     descriptionBtn.disabled = true;
-    descriptionBtn.classList.add('loading'); // Add pulsing animation
+    descriptionBtn.classList.add('loading');
 
     const description = await getPlaylistDescription(currentPlaylist);
 
     descriptionDiv.textContent = description;
     descriptionDiv.classList.remove('loading');
-    descriptionBtn.classList.remove('loading'); // Remove pulsing animation
+    descriptionBtn.classList.remove('loading');
 
     if (description.includes('Unable to generate') || description.includes('unavailable')) {
         descriptionDiv.classList.add('error');
@@ -312,4 +395,5 @@ function setupEventListeners() {
 document.addEventListener('DOMContentLoaded', () => {
     loadPlaylists();
     setupEventListeners();
+    setupSearchListeners();
 });
