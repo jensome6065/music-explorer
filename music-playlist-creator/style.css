@@ -123,6 +123,10 @@ main {
     color: #e74c3c;
 }
 
+.heart-icon.liked {
+    color: #e74c3c;
+}
+
 .like-count {
     font-weight: 500;
 }

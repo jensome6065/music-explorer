@@ -4,82 +4,214 @@
     "playlist_name": "tswizzle",
     "playlist_creator": "Jennifer Ye",
     "playlist_art": "assets/img/taylor.jpg",
-    "likeCount": 312,
+    "likeCount": 347,
     "songs": [
       {
         "id": 101,
-        "title": "Getaway Car",
+        "title": "Love Story",
         "artist": "Taylor Swift",
-        "album": "reputation",
-        "duration": "3:53"
+        "album": "Fearless",
+        "duration": "3:56"
       },
       {
         "id": 102,
+        "title": "Blank Space",
+        "artist": "Taylor Swift",
+        "album": "1989",
+        "duration": "3:51"
+      },
+      {
+        "id": 103,
         "title": "Delicate",
         "artist": "Taylor Swift",
         "album": "reputation",
         "duration": "3:52"
       },
       {
-        "id": 103,
-        "title": "Cornelia Street",
-        "artist": "Taylor Swift",
-        "album": "Lover",
-        "duration": "4:47"
-      },
-      {
         "id": 104,
-        "title": "Cruel Summer",
+        "title": "cardigan",
         "artist": "Taylor Swift",
-        "album": "Lover",
-        "duration": "2:58"
+        "album": "folklore",
+        "duration": "3:59"
       },
       {
         "id": 105,
-        "title": "Is It Over Now? (Taylor's Version) (From The Vault)",
+        "title": "Anti-Hero",
         "artist": "Taylor Swift",
-        "album": "1989 (Taylor's Version)",
-        "duration": "3:49"
+        "album": "Midnights",
+        "duration": "3:21"
       }
     ]
   },
   {
     "playlistID": 2,
-    "playlist_name": "rnb",
+    "playlist_name": "champagne papi",
     "playlist_creator": "Jennifer Ye",
-    "playlist_art": "assets/img/rnb.jpg",
-    "likeCount": 276,
+    "playlist_art": "assets/img/drake.jpg",
+    "likeCount": 318,
     "songs": [
       {
         "id": 201,
-        "title": "Best Part (feat. H.E.R.)",
-        "artist": "Daniel Caesar, H.E.R.",
-        "album": "Freudian",
-        "duration": "3:29"
+        "title": "Hold On, We're Going Home",
+        "artist": "Drake",
+        "album": "Nothing Was the Same",
+        "duration": "3:51"
       },
       {
         "id": 202,
-        "title": "Like I Want You",
-        "artist": "GIVEON",
-        "album": "TAKE TIME",
-        "duration": "4:21"
+        "title": "One Dance",
+        "artist": "Drake",
+        "album": "Views",
+        "duration": "2:54"
       },
       {
         "id": 203,
-        "title": "Heartbreak Anniversary",
-        "artist": "GIVEON",
-        "album": "TAKE TIME",
-        "duration": "3:16"
+        "title": "God's Plan",
+        "artist": "Drake",
+        "album": "Scorpion",
+        "duration": "3:19"
       },
       {
         "id": 204,
-        "title": "Japanese Denim",
-        "artist": "Daniel Caesar",
-        "album": "Get You - Single",
-        "duration": "4:30"
+        "title": "Laugh Now Cry Later (feat. Lil Durk)",
+        "artist": "Drake, Lil Durk",
+        "album": "Dark Lane Demo Tapes",
+        "duration": "4:21"
       },
       {
         "id": 205,
+        "title": "Rich Flex",
+        "artist": "Drake, 21 Savage",
+        "album": "Her Loss",
+        "duration": "3:59"
+      }
+    ]
+  },
+  {
+    "playlistID": 3,
+    "playlist_name": "dancedancedance",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/jigitz.webp",
+    "likeCount": 231,
+    "songs": [
+      {
+        "id": 301,
+        "title": "dollaz n dollaz",
+        "artist": "jigitz, Lay Bankz",
+        "album": "dollaz n dollaz - Single",
+        "duration": "2:20"
+      },
+      {
+        "id": 302,
+        "title": "s.o.s",
+        "artist": "jigitz, Tabi",
+        "album": "s.o.s - Single",
+        "duration": "2:31"
+      },
+      {
+        "id": 303,
+        "title": "car crash",
+        "artist": "jigitz, Charlotte Plank",
+        "album": "car crash - Single",
+        "duration": "2:38"
+      },
+      {
+        "id": 304,
+        "title": "see u",
+        "artist": "jigitz",
+        "album": "see u - Single",
+        "duration": "2:43"
+      },
+      {
+        "id": 305,
+        "title": "pressure",
+        "artist": "jigitz",
+        "album": "pressure - Single",
+        "duration": "2:34"
+      }
+    ]
+  },
+  {
+    "playlistID": 4,
+    "playlist_name": "the queen",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/sza.jpg",
+    "likeCount": 302,
+    "songs": [
+      {
+        "id": 401,
+        "title": "Broken Clocks",
+        "artist": "SZA",
+        "album": "Ctrl",
+        "duration": "3:51"
+      },
+      {
+        "id": 402,
+        "title": "Good Days",
+        "artist": "SZA",
+        "album": "Good Days - Single",
+        "duration": "4:39"
+      },
+      {
+        "id": 403,
+        "title": "I Hate U",
+        "artist": "SZA",
+        "album": "I Hate U - Single",
+        "duration": "2:54"
+      },
+      {
+        "id": 404,
+        "title": "All The Stars (with SZA)",
+        "artist": "Kendrick Lamar, SZA",
+        "album": "Black Panther: The Album",
+        "duration": "3:52"
+      },
+      {
+        "id": 405,
+        "title": "Saturn",
+        "artist": "SZA",
+        "album": "Saturn - Single",
+        "duration": "3:07"
+      }
+    ]
+  },
+  {
+    "playlistID": 5,
+    "playlist_name": "jb",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/justin.jpg",
+    "likeCount": 286,
+    "songs": [
+      {
+        "id": 501,
+        "title": "One Time",
+        "artist": "Justin Bieber",
+        "album": "My World",
+        "duration": "3:35"
+      },
+      {
+        "id": 502,
+        "title": "Baby",
+        "artist": "Justin Bieber, Ludacris",
+        "album": "My World 2.0",
+        "duration": "3:34"
+      },
+      {
+        "id": 503,
+        "title": "Boyfriend",
+        "artist": "Justin Bieber",
+        "album": "Believe",
+        "duration": "2:51"
+      },
+      {
+        "id": 504,
+        "title": "Love Yourself",
+        "artist": "Justin Bieber",
+        "album": "Purpose",
+        "duration": "3:53"
+      },
+      {
+        "id": 505,
         "title": "Off My Face",
         "artist": "Justin Bieber",
         "album": "Justice",
@@ -88,178 +220,46 @@
     ]
   },
   {
-    "playlistID": 3,
-    "playlist_name": "3am",
-    "playlist_creator": "Jennifer Ye",
-    "playlist_art": "assets/img/3am.jpg",
-    "likeCount": 223,
-    "songs": [
-      {
-        "id": 301,
-        "title": "As the World Caves In",
-        "artist": "Matt Maltese",
-        "album": "Bad Contestant",
-        "duration": "3:38"
-      },
-      {
-        "id": 302,
-        "title": "Wish You Were Sober",
-        "artist": "Conan Gray",
-        "album": "Kid Krow",
-        "duration": "2:48"
-      },
-      {
-        "id": 303,
-        "title": "Maniac",
-        "artist": "Conan Gray",
-        "album": "Kid Krow",
-        "duration": "3:05"
-      },
-      {
-        "id": 304,
-        "title": "3:15",
-        "artist": "Bazzi",
-        "album": "COSMIC",
-        "duration": "2:35"
-      },
-      {
-        "id": 305,
-        "title": "Die For You",
-        "artist": "The Weeknd",
-        "album": "Starboy",
-        "duration": "4:20"
-      }
-    ]
-  },
-  {
-    "playlistID": 4,
-    "playlist_name": "love?",
-    "playlist_creator": "Jennifer Ye",
-    "playlist_art": "assets/img/love.jpg",
-    "likeCount": 290,
-    "songs": [
-      {
-        "id": 401,
-        "title": "Style",
-        "artist": "Taylor Swift",
-        "album": "1989",
-        "duration": "3:51"
-      },
-      {
-        "id": 402,
-        "title": "Into You",
-        "artist": "Ariana Grande",
-        "album": "Dangerous Woman",
-        "duration": "4:04"
-      },
-      {
-        "id": 403,
-        "title": "boyfriend (with Social House)",
-        "artist": "Ariana Grande, Social House",
-        "album": "boyfriend - Single",
-        "duration": "3:06"
-      },
-      {
-        "id": 404,
-        "title": "Starboy",
-        "artist": "The Weeknd, Daft Punk",
-        "album": "Starboy",
-        "duration": "3:50"
-      },
-      {
-        "id": 405,
-        "title": "You Belong With Me",
-        "artist": "Taylor Swift",
-        "album": "Fearless",
-        "duration": "3:51"
-      }
-    ]
-  },
-  {
-    "playlistID": 5,
-    "playlist_name": "late night drive",
-    "playlist_creator": "Jennifer Ye",
-    "playlist_art": "assets/img/drive.jpg",
-    "likeCount": 248,
-    "songs": [
-      {
-        "id": 501,
-        "title": "Nights Like This (feat. Ty Dolla $ign)",
-        "artist": "Kehlani, Ty Dolla $ign",
-        "album": "While We Wait",
-        "duration": "3:22"
-      },
-      {
-        "id": 502,
-        "title": "Summertime In Paris",
-        "artist": "Jaden, WILLOW",
-        "album": "ERYS",
-        "duration": "4:36"
-      },
-      {
-        "id": 503,
-        "title": "Seasons (with Khalid)",
-        "artist": "6LACK, Khalid",
-        "album": "East Atlanta Love Letter",
-        "duration": "4:02"
-      },
-      {
-        "id": 504,
-        "title": "All The Stars (with SZA)",
-        "artist": "Kendrick Lamar, SZA",
-        "album": "Black Panther: The Album",
-        "duration": "3:52"
-      },
-      {
-        "id": 505,
-        "title": "Into the I-LAND",
-        "artist": "I-LAND",
-        "album": "Into the I-LAND - Single",
-        "duration": "3:36"
-      }
-    ]
-  },
-  {
     "playlistID": 6,
-    "playlist_name": "slow burn",
+    "playlist_name": "lorde im sad",
     "playlist_creator": "Jennifer Ye",
-    "playlist_art": "assets/img/slow.jpg",
-    "likeCount": 334,
+    "playlist_art": "assets/img/lorde.jpg",
+    "likeCount": 264,
     "songs": [
       {
         "id": 601,
-        "title": "Daylight",
-        "artist": "Taylor Swift",
-        "album": "Lover",
-        "duration": "4:53"
+        "title": "Royals",
+        "artist": "Lorde",
+        "album": "Pure Heroine",
+        "duration": "3:10"
       },
       {
         "id": 602,
-        "title": "illicit affairs",
-        "artist": "Taylor Swift",
-        "album": "folklore",
-        "duration": "3:11"
+        "title": "Green Light",
+        "artist": "Lorde",
+        "album": "Melodrama",
+        "duration": "3:54"
       },
       {
         "id": 603,
-        "title": "You Are In Love",
-        "artist": "Taylor Swift",
-        "album": "1989 (Deluxe)",
-        "duration": "4:27"
+        "title": "Stoned at the Nail Salon",
+        "artist": "Lorde",
+        "album": "Solar Power",
+        "duration": "4:26"
       },
       {
         "id": 604,
-        "title": "Afterglow",
-        "artist": "Taylor Swift",
-        "album": "Lover",
-        "duration": "3:43"
+        "title": "Magnets",
+        "artist": "Disclosure, Lorde",
+        "album": "Caracal",
+        "duration": "3:19"
       },
       {
         "id": 605,
-        "title": "Perfect",
-        "artist": "One Direction",
-        "album": "Made in the A.M.",
-        "duration": "3:50"
+        "title": "Homemade Dynamite",
+        "artist": "Lorde",
+        "album": "Melodrama",
+        "duration": "3:09"
       }
     ]
   }

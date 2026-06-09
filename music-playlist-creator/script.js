@@ -103,6 +103,31 @@ function closeModal() {
     document.getElementById('modalOverlay').classList.remove('active');
 }
 
+function toggleLike(playlistID, heartIcon) {
+    const playlist = playlists.find(p => p.playlistID === playlistID);
+
+    if (!playlist) {
+        console.error(`Playlist with ID ${playlistID} not found`);
+        return;
+    }
+
+    const isLiked = heartIcon.classList.contains('liked');
+
+    if (isLiked) {
+        playlist.likeCount = Math.max(0, playlist.likeCount - 1);
+        heartIcon.classList.remove('liked');
+        heartIcon.textContent = '♡';
+    } else {
+        playlist.likeCount += 1;
+        heartIcon.classList.add('liked');
+        heartIcon.textContent = '♥';
+    }
+
+    const card = heartIcon.closest('.playlist-card');
+    const likeCountElement = card.querySelector('.like-count');
+    likeCountElement.textContent = playlist.likeCount;
+}
+
 function setupEventListeners() {
     const modalOverlay = document.getElementById('modalOverlay');
     modalOverlay.addEventListener('click', (e) => {
@@ -114,6 +139,16 @@ function setupEventListeners() {
     document.getElementById('modalClose').addEventListener('click', closeModal);
 
     document.addEventListener('click', (e) => {
+        const heartIcon = e.target.closest('.heart-icon');
+        if (heartIcon) {
+            e.stopPropagation(); // Prevent modal from opening
+            const card = heartIcon.closest('.playlist-card');
+            const playlistID = parseInt(card.getAttribute('data-playlist-id'));
+            toggleLike(playlistID, heartIcon);
+            return;
+        }
+
+        // Check if playlist card was clicked (but not heart icon)
         const card = e.target.closest('.playlist-card');
         if (card) {
             const playlistID = parseInt(card.getAttribute('data-playlist-id'));

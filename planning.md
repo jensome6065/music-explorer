@@ -132,6 +132,42 @@ Each song should display:
 **Behavior:**
 - Can be called even if modal is already closed (idempotent)
 
+---
+
+#### `toggleLike(playlistID, heartIcon)`
+**Purpose:** Toggles the like state for a playlist when the heart icon is clicked.
+
+**Inputs:**
+- `playlistID` (number) - the ID of the playlist being liked/unliked
+- `heartIcon` (DOM element) — the heart icon element that was clicked
+
+**Outputs/Effects:**
+- Returns: nothing (void function)
+- Data model change: increments or decrements `likeCount` in the playlist object
+- DOM change: updates the like count display and heart icon appearance
+
+**Branch 1: Unliked → Liked**
+When a user clicks an unliked heart icon:
+- **Data:** Increment `playlist.likeCount` by 1
+- **DOM:** 
+  - Change heart icon from ♡ to ♥ (or add `.liked` class)
+  - Update like count display to show new value
+- **Visual:** Heart icon turns red
+
+**Branch 2: Liked → Unliked**
+When a user clicks a liked heart icon:
+- **Data:** Decrement `playlist.likeCount` by 1
+- **DOM:**
+  - Change heart icon from ♥ to ♡ (or remove `.liked` class)
+  - Update like count display to show new value
+- **Visual:** Heart icon returns to default color
+
+**Constraints:**
+- Each playlist can only be liked once at a time per user
+- Like count cannot go below 0 (prevent negative likes)
+- State tracked by presence/absence of `.liked` class on heart icon
+- Clicking the heart should NOT open the modal (event propagation stopped)
+
 ### AI Feature Spec (Milestone 8)
 [Leave blank — fill in before Milestone 8]
 
@@ -235,3 +271,28 @@ Each song should display:
 - Modal can be closed multiple ways (overlay click, close button) for flexibility
 - Clicking anywhere on a card opens the modal (not just specific elements)
 - Modal prevents click-through: overlay click check ensures content clicks don't close modal
+
+---
+
+#### MILESTONE 5
+
+**Toggle State Management:**
+- Like state tracked by presence of `.liked` class on heart icon (simple, reliable)
+- Two distinct branches: unliked → liked (increment), liked → unliked (decrement)
+- State persists in both data model and DOM simultaneously
+
+**Data Integrity:**
+- Like count updates in the global `playlists` array (source of truth)
+- `Math.max(0, count - 1)` prevents negative like counts
+- Each playlist can be liked/unliked unlimited times, but only counts as 1 like at a time
+
+**Visual Feedback:**
+- Heart icon changes: ♡ (unliked) ↔ ♥ (liked)
+- Color change: default → red (#e74c3c) when liked via `.liked` class
+- Like count updates immediately on click for instant feedback
+
+**Event Handling Strategy:**
+- Event delegation: Single listener handles all heart icons efficiently
+- `e.stopPropagation()` prevents modal from opening when clicking heart
+- Event check order: heart icon first (with early return), then card
+- Ensures clicking heart only toggles like, clicking card (except heart) opens modal
