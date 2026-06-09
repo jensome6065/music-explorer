@@ -1,4 +1,5 @@
 let playlists = [];
+let currentSort = 'likes'; // Default sort
 
 function createSkeletonCard() {
     const skeleton = document.createElement('div');
@@ -32,7 +33,9 @@ async function loadPlaylists() {
 
         await new Promise(resolve => setTimeout(resolve, 300));
 
-        renderPlaylistCards(playlists);
+        // Apply default sort on initial load
+        const sortedPlaylists = sortPlaylists(playlists, currentSort);
+        renderPlaylistCards(sortedPlaylists);
     } catch (error) {
         console.error('Error loading playlists:', error);
         displayMessage('Error loading playlists. Please try again later.');
@@ -94,6 +97,46 @@ function displayNoResults(searchQuery) {
     `;
 }
 
+function sortPlaylists(playlistsToSort, sortBy) {
+    const sorted = [...playlistsToSort];
+
+    switch (sortBy) {
+        case 'likes':
+            sorted.sort((a, b) => {
+                if (b.likeCount !== a.likeCount) {
+                    return b.likeCount - a.likeCount;
+                }
+                return a.playlist_name.localeCompare(b.playlist_name);
+            });
+            break;
+
+        case 'name':
+            sorted.sort((a, b) => {
+                return a.playlist_name.localeCompare(b.playlist_name);
+            });
+            break;
+
+        case 'recent':
+            sorted.sort((a, b) => {
+                if (b.playlistID !== a.playlistID) {
+                    return b.playlistID - a.playlistID;
+                }
+                return a.playlist_name.localeCompare(b.playlist_name);
+            });
+            break;
+
+        default:
+            sorted.sort((a, b) => {
+                if (b.likeCount !== a.likeCount) {
+                    return b.likeCount - a.likeCount;
+                }
+                return a.playlist_name.localeCompare(b.playlist_name);
+            });
+    }
+
+    return sorted;
+}
+
 function filterPlaylists(searchQuery) {
     const query = searchQuery.toLowerCase().trim();
 
@@ -132,12 +175,20 @@ function handleSearch() {
     }
 
     const filteredPlaylists = filterPlaylists(query);
+    const sortedPlaylists = sortPlaylists(filteredPlaylists, currentSort);
 
-    if (filteredPlaylists.length === 0 && query.length > 0) {
+    if (sortedPlaylists.length === 0 && query.length > 0) {
         displayNoResults(query);
     } else {
-        renderPlaylistCards(filteredPlaylists);
+        renderPlaylistCards(sortedPlaylists);
     }
+}
+
+function handleSort() {
+    const sortSelect = document.getElementById('sortSelect');
+    currentSort = sortSelect.value;
+
+    handleSearch();
 }
 
 function clearSearch() {
@@ -146,7 +197,10 @@ function clearSearch() {
 
     searchInput.value = '';
     searchClear.classList.remove('visible');
-    renderPlaylistCards(playlists);
+
+    const sortedPlaylists = sortPlaylists(playlists, currentSort);
+    renderPlaylistCards(sortedPlaylists);
+
     searchInput.focus();
 }
 
@@ -164,6 +218,14 @@ function setupSearchListeners() {
                 clearSearch();
             }
         });
+    }
+}
+
+function setupSortListeners() {
+    const sortSelect = document.getElementById('sortSelect');
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', handleSort);
     }
 }
 
@@ -396,4 +458,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadPlaylists();
     setupEventListeners();
     setupSearchListeners();
+    setupSortListeners();
 });
