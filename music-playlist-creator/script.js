@@ -1,9 +1,41 @@
 let playlists = [];
 
+// Create skeleton loader cards
+function createSkeletonCard() {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'skeleton-card';
+    skeleton.innerHTML = `
+        <div class="skeleton-cover"></div>
+        <div class="skeleton-info">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-author"></div>
+            <div class="skeleton-likes"></div>
+        </div>
+    `;
+    return skeleton;
+}
+
+// Show skeleton loaders while loading
+function showSkeletonLoaders(count = 6) {
+    const container = document.querySelector('.playlist-cards');
+    container.innerHTML = '';
+
+    for (let i = 0; i < count; i++) {
+        container.appendChild(createSkeletonCard());
+    }
+}
+
 async function loadPlaylists() {
+    // Show skeleton loaders immediately
+    showSkeletonLoaders();
+
     try {
         const response = await fetch('data/data.json');
         playlists = await response.json();
+
+        // Small delay to ensure smooth transition (prevents flash)
+        await new Promise(resolve => setTimeout(resolve, 300));
+
         renderPlaylistCards(playlists);
     } catch (error) {
         console.error('Error loading playlists:', error);
@@ -127,7 +159,6 @@ function closeModal() {
 }
 
 async function getPlaylistDescription(playlist) {
-    // API key is loaded from secrets.js (not committed to git)
     if (!OPENROUTER_API_KEY || OPENROUTER_API_KEY === 'YOUR_API_KEY_HERE') {
         console.error('OpenRouter API key not configured');
         return 'Unable to generate description. API key not configured.';
@@ -157,7 +188,7 @@ Generate a 2-3 sentence description that captures the vibe, mood, and theme of t
                 'X-Title': 'Music Playlist Explorer'
             },
             body: JSON.stringify({
-                model: 'google/gemma-3-27b-it',
+                model: 'google/gemma-4-31b-it:free',
                 messages: [
                     {
                         role: 'user',
@@ -207,11 +238,13 @@ async function handleGetDescriptionClick() {
     descriptionDiv.classList.remove('error');
     descriptionDiv.classList.add('visible', 'loading');
     descriptionBtn.disabled = true;
+    descriptionBtn.classList.add('loading'); // Add pulsing animation
 
     const description = await getPlaylistDescription(currentPlaylist);
 
     descriptionDiv.textContent = description;
     descriptionDiv.classList.remove('loading');
+    descriptionBtn.classList.remove('loading'); // Remove pulsing animation
 
     if (description.includes('Unable to generate') || description.includes('unavailable')) {
         descriptionDiv.classList.add('error');

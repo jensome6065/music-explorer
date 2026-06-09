@@ -31,13 +31,32 @@ function selectRandomPlaylist(playlists) {
 
 // Display the featured playlist
 function displayFeaturedPlaylist(playlist) {
-    // Update cover image
-    document.getElementById('featuredCover').src = playlist.playlist_art;
-    document.getElementById('featuredCover').alt = playlist.playlist_name + ' cover';
+    // Update cover image with fade-in effect
+    const coverImg = document.getElementById('featuredCover');
+    coverImg.style.opacity = '0';
+    coverImg.src = playlist.playlist_art;
+    coverImg.alt = playlist.playlist_name + ' cover';
+    coverImg.onload = () => {
+        coverImg.style.transition = 'opacity 0.5s ease';
+        coverImg.style.opacity = '1';
+    };
 
-    // Update playlist name and creator
-    document.getElementById('featuredPlaylistName').textContent = playlist.playlist_name;
-    document.getElementById('featuredCreator').textContent = 'by ' + playlist.playlist_creator;
+    // Update playlist name and creator with fade-in
+    const nameElement = document.getElementById('featuredPlaylistName');
+    const creatorElement = document.getElementById('featuredCreator');
+
+    nameElement.style.opacity = '0';
+    creatorElement.style.opacity = '0';
+
+    setTimeout(() => {
+        nameElement.textContent = playlist.playlist_name;
+        creatorElement.textContent = 'by ' + playlist.playlist_creator;
+
+        nameElement.style.transition = 'opacity 0.5s ease';
+        creatorElement.style.transition = 'opacity 0.5s ease';
+        nameElement.style.opacity = '1';
+        creatorElement.style.opacity = '1';
+    }, 200);
 
     // Populate song list
     const featuredSongs = document.getElementById('featuredSongs');

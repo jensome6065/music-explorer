@@ -262,5 +262,395 @@
         "duration": "3:09"
       }
     ]
+  },
+  {
+    "playlistID": 7,
+    "playlist_name": "aplomb",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/aplomb.webp",
+    "likeCount": 192,
+    "songs": [
+      {
+        "id": 701,
+        "title": "Starboy",
+        "artist": "The Weeknd, Daft Punk",
+        "album": "Starboy",
+        "duration": "3:50"
+      },
+      {
+        "id": 702,
+        "title": "Low",
+        "artist": "SZA",
+        "album": "SOS",
+        "duration": "3:01"
+      },
+      {
+        "id": 703,
+        "title": "Rich Flex",
+        "artist": "Drake, 21 Savage",
+        "album": "Her Loss",
+        "duration": "3:59"
+      },
+      {
+        "id": 704,
+        "title": "Love Me",
+        "artist": "Lil Wayne, Drake, Future",
+        "album": "I Am Not a Human Being II",
+        "duration": "4:15"
+      },
+      {
+        "id": 705,
+        "title": "Conceited",
+        "artist": "Flo Milli",
+        "album": "Ho, why is you here ?",
+        "duration": "2:15"
+      },
+      {
+        "id": 706,
+        "title": "Needed Me",
+        "artist": "Rihanna",
+        "album": "ANTI",
+        "duration": "3:11"
+      },
+      {
+        "id": 707,
+        "title": "Escapism. - Sped Up",
+        "artist": "RAYE, 070 Shake",
+        "album": "Escapism. (Sped Up) - Single",
+        "duration": "3:35"
+      },
+      {
+        "id": 708,
+        "title": "SexyBack (feat. Timbaland)",
+        "artist": "Justin Timberlake, Timbaland",
+        "album": "FutureSex/LoveSounds",
+        "duration": "4:02"
+      }
+    ]
+  },
+  {
+    "playlistID": 8,
+    "playlist_name": "hopeless romantic",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/hopeless.jpeg",
+    "likeCount": 175,
+    "songs": [
+      {
+        "id": 801,
+        "title": "Dress",
+        "artist": "Taylor Swift",
+        "album": "reputation",
+        "duration": "3:50"
+      },
+      {
+        "id": 802,
+        "title": "Love Drought",
+        "artist": "Beyonce",
+        "album": "Lemonade",
+        "duration": "3:58"
+      },
+      {
+        "id": 803,
+        "title": "Supercut",
+        "artist": "Lorde",
+        "album": "Melodrama",
+        "duration": "4:37"
+      },
+      {
+        "id": 804,
+        "title": "Don't Delete The Kisses",
+        "artist": "Wolf Alice",
+        "album": "Visions Of A Life",
+        "duration": "4:35"
+      },
+      {
+        "id": 805,
+        "title": "Don't Smile",
+        "artist": "Sabrina Carpenter",
+        "album": "Short n' Sweet",
+        "duration": "3:26"
+      },
+      {
+        "id": 806,
+        "title": "Need You Now",
+        "artist": "Lady A",
+        "album": "Need You Now",
+        "duration": "4:37"
+      },
+      {
+        "id": 807,
+        "title": "Fade Into You",
+        "artist": "Mazzy Star",
+        "album": "So Tonight That I Might See",
+        "duration": "4:55"
+      },
+      {
+        "id": 808,
+        "title": "Dreams",
+        "artist": "The Cranberries",
+        "album": "No Need to Argue",
+        "duration": "4:31"
+      }
+    ]
+  },
+  {
+    "playlistID": 9,
+    "playlist_name": "the bands",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/bands.jpg",
+    "likeCount": 208,
+    "songs": [
+      {
+        "id": 901,
+        "title": "Sweater Weather",
+        "artist": "The Neighbourhood",
+        "album": "I Love You.",
+        "duration": "4:00"
+      },
+      {
+        "id": 902,
+        "title": "Do I Wanna Know?",
+        "artist": "Arctic Monkeys",
+        "album": "AM",
+        "duration": "4:32"
+      },
+      {
+        "id": 903,
+        "title": "Somebody Else",
+        "artist": "The 1975",
+        "album": "I like it when you sleep, for you are so beautiful yet so unaware of it",
+        "duration": "5:47"
+      },
+      {
+        "id": 904,
+        "title": "Apocalypse",
+        "artist": "Cigarettes After Sex",
+        "album": "Cigarettes After Sex",
+        "duration": "4:50"
+      },
+      {
+        "id": 905,
+        "title": "Cariño",
+        "artist": "The Marias",
+        "album": "Superclean Vol. II",
+        "duration": "2:12"
+      },
+      {
+        "id": 906,
+        "title": "The Less I Know The Better",
+        "artist": "Tame Impala",
+        "album": "Currents",
+        "duration": "3:38"
+      },
+      {
+        "id": 907,
+        "title": "I Wanna Get Better",
+        "artist": "Bleachers",
+        "album": "Strange Desire",
+        "duration": "3:24"
+      },
+      {
+        "id": 908,
+        "title": "Daddy Issues",
+        "artist": "The Neighbourhood",
+        "album": "Wiped Out!",
+        "duration": "4:21"
+      }
+    ]
+  },
+  {
+    "playlistID": 10,
+    "playlist_name": "male manipulator",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/male.webp",
+    "likeCount": 223,
+    "songs": [
+      {
+        "id": 1001,
+        "title": "After Party",
+        "artist": "Don Toliver",
+        "album": "Heaven or Hell",
+        "duration": "2:47"
+      },
+      {
+        "id": 1002,
+        "title": "Private Landing (feat. Justin Bieber & Future)",
+        "artist": "Don Toliver, Justin Bieber, Future",
+        "album": "Love Sick",
+        "duration": "3:58"
+      },
+      {
+        "id": 1003,
+        "title": "Lemonade",
+        "artist": "Internet Money, Gunna, Don Toliver, NAV",
+        "album": "B4 The Storm",
+        "duration": "3:15"
+      },
+      {
+        "id": 1004,
+        "title": "Praise God",
+        "artist": "Kanye West, Travis Scott, Baby Keem",
+        "album": "Donda",
+        "duration": "3:46"
+      },
+      {
+        "id": 1005,
+        "title": "Crew Love",
+        "artist": "Drake, The Weeknd",
+        "album": "Take Care",
+        "duration": "3:28"
+      },
+      {
+        "id": 1006,
+        "title": "L$D",
+        "artist": "A$AP Rocky",
+        "album": "AT.LONG.LAST.A$AP",
+        "duration": "3:58"
+      },
+      {
+        "id": 1007,
+        "title": "Paranoid (feat. B.o.B)",
+        "artist": "Ty Dolla $ign, B.o.B",
+        "album": "Beach House EP",
+        "duration": "3:37"
+      },
+      {
+        "id": 1008,
+        "title": "No Idea",
+        "artist": "Don Toliver",
+        "album": "Heaven or Hell",
+        "duration": "2:33"
+      }
+    ]
+  },
+  {
+    "playlistID": 11,
+    "playlist_name": "nostalgia",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/nostalgia.jpg",
+    "likeCount": 254,
+    "songs": [
+      {
+        "id": 1101,
+        "title": "Love Me",
+        "artist": "Justin Bieber",
+        "album": "My World",
+        "duration": "3:12"
+      },
+      {
+        "id": 1102,
+        "title": "Stitches",
+        "artist": "Shawn Mendes",
+        "album": "Handwritten (Revisited)",
+        "duration": "3:27"
+      },
+      {
+        "id": 1103,
+        "title": "Perfect",
+        "artist": "Ed Sheeran",
+        "album": "Divide",
+        "duration": "4:23"
+      },
+      {
+        "id": 1104,
+        "title": "Just the Way You Are",
+        "artist": "Bruno Mars",
+        "album": "Doo-Wops & Hooligans",
+        "duration": "3:40"
+      },
+      {
+        "id": 1105,
+        "title": "Mine",
+        "artist": "Bazzi",
+        "album": "COSMIC",
+        "duration": "2:11"
+      },
+      {
+        "id": 1106,
+        "title": "What Makes You Beautiful",
+        "artist": "One Direction",
+        "album": "Up All Night",
+        "duration": "3:20"
+      },
+      {
+        "id": 1107,
+        "title": "As Long As You Love Me",
+        "artist": "Justin Bieber, Big Sean",
+        "album": "Believe",
+        "duration": "3:49"
+      },
+      {
+        "id": 1108,
+        "title": "10,000 Hours",
+        "artist": "Dan + Shay, Justin Bieber",
+        "album": "10,000 Hours - Single",
+        "duration": "2:47"
+      }
+    ]
+  },
+  {
+    "playlistID": 12,
+    "playlist_name": "aces",
+    "playlist_creator": "Jennifer Ye",
+    "playlist_art": "assets/img/aces.jpg",
+    "likeCount": 141,
+    "songs": [
+      {
+        "id": 1201,
+        "title": "1 In A Million",
+        "artist": "ASTRO",
+        "album": "All Light",
+        "duration": "3:39"
+      },
+      {
+        "id": 1202,
+        "title": "You Never Know",
+        "artist": "BLACKPINK",
+        "album": "THE ALBUM",
+        "duration": "3:49"
+      },
+      {
+        "id": 1203,
+        "title": "Spring Snow",
+        "artist": "THE BOYZ",
+        "album": "THE ONLY",
+        "duration": "3:30"
+      },
+      {
+        "id": 1204,
+        "title": "Euphoria",
+        "artist": "BTS",
+        "album": "LOVE YOURSELF 結 'Answer'",
+        "duration": "3:49"
+      },
+      {
+        "id": 1205,
+        "title": "Polaroid Love",
+        "artist": "ENHYPEN",
+        "album": "DIMENSION : ANSWER",
+        "duration": "3:04"
+      },
+      {
+        "id": 1206,
+        "title": "Ditto",
+        "artist": "NewJeans",
+        "album": "OMG",
+        "duration": "3:05"
+      },
+      {
+        "id": 1207,
+        "title": "Smart",
+        "artist": "LE SSERAFIM",
+        "album": "EASY",
+        "duration": "2:46"
+      },
+      {
+        "id": 1208,
+        "title": "Love Dive",
+        "artist": "IVE",
+        "album": "LOVE DIVE",
+        "duration": "2:58"
+      }
+    ]
   }
 ]
