@@ -1,6 +1,15 @@
 let playlists = [];
 let currentSort = 'likes';
 
+let currentAudio = null;
+let currentSongId = null;
+
+let currentPlaylist = null;
+let playlistQueue = [];
+let currentQueueIndex = -1;
+
+let shuffledState = {};
+
 function createSkeletonCard() {
     const skeleton = document.createElement('div');
     skeleton.className = 'skeleton-card';
@@ -55,27 +64,6 @@ function renderPlaylistCards(playlists) {
         const card = createPlaylistCard(playlist);
         container.appendChild(card);
     });
-}
-
-function calculateTotalDuration(songs) {
-    if (!songs || songs.length === 0) return '0:00';
-
-    let totalSeconds = 0;
-    songs.forEach(song => {
-        const parts = song.duration.split(':');
-        const minutes = parseInt(parts[0]) || 0;
-        const seconds = parseInt(parts[1]) || 0;
-        totalSeconds += (minutes * 60) + seconds;
-    });
-
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
 function createPlaylistCard(playlist) {
@@ -270,38 +258,43 @@ function setupSortListeners() {
     }
 }
 
-function shuffleSongs(songs) {
-    if (!songs || songs.length === 0) {
-        return [];
-    }
-
-    const shuffled = [...songs];
-
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-
-    return shuffled;
-}
-
 function handleShuffleClick() {
     const modalPlaylistName = document.getElementById('modalPlaylistName').textContent;
-    const currentPlaylist = playlists.find(p => p.playlist_name === modalPlaylistName);
+    const playlist = playlists.find(p => p.playlist_name === modalPlaylistName);
 
-    if (!currentPlaylist || !currentPlaylist.songs || currentPlaylist.songs.length === 0) {
+    if (!playlist || !playlist.songs || playlist.songs.length === 0) {
         return;
     }
 
-    const shuffledSongs = shuffleSongs(currentPlaylist.songs);
+    const shuffledSongs = shuffleSongs(playlist.songs);
+    shuffledState[playlist.playlistID] = shuffledSongs;
 
+    renderModalSongs(shuffledSongs);
+}
+
+function renderModalSongs(songs) {
     const modalSongs = document.getElementById('modalSongs');
     modalSongs.innerHTML = '';
 
-    shuffledSongs.forEach(song => {
+    songs.forEach(song => {
         const songElement = createSongElement(song);
         modalSongs.appendChild(songElement);
     });
+
+    if (currentSongId) {
+        const playingSong = songs.find(s => s.id === currentSongId);
+        if (playingSong) {
+            const songItem = document.querySelector(`.song-item[data-song-id="${currentSongId}"]`);
+            if (songItem) {
+                const button = songItem.querySelector('.play-button');
+                if (button) {
+                    button.innerHTML = '⏸';
+                    button.classList.add('active');
+                }
+                songItem.classList.add('playing');
+            }
+        }
+    }
 }
 
 function populateModal(playlist) {
@@ -311,17 +304,14 @@ function populateModal(playlist) {
     document.getElementById('modalPlaylistAuthor').textContent = playlist.playlist_creator;
 
     const modalSongs = document.getElementById('modalSongs');
-    modalSongs.innerHTML = '';
 
     if (!playlist.songs || playlist.songs.length === 0) {
         modalSongs.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">No songs in this playlist</p>';
         return;
     }
 
-    playlist.songs.forEach(song => {
-        const songElement = createSongElement(song);
-        modalSongs.appendChild(songElement);
-    });
+    const songsToDisplay = shuffledState[playlist.playlistID] || playlist.songs;
+    renderModalSongs(songsToDisplay);
 }
 
 function openModal(playlistID) {
@@ -334,6 +324,9 @@ function openModal(playlistID) {
 
     populateModal(playlist);
     document.getElementById('modalOverlay').classList.add('active');
+
+    const isThisPlaylistPlaying = currentPlaylist?.playlistID === playlistID && playlistQueue.length > 0;
+    updatePlayAllButton(playlistID, isThisPlaylistPlaying);
 }
 
 function closeModal() {
@@ -495,9 +488,189 @@ function setupEventListeners() {
     });
 }
 
+
+async function togglePlayPause(songId, songTitle, songArtist, button) {
+    const songItem = button.closest('.song-item');
+
+    if (currentSongId === songId && currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        button.innerHTML = '▶';
+        button.classList.remove('active');
+        songItem.classList.remove('playing');
+        return;
+    }
+
+    if (currentSongId === songId && currentAudio && currentAudio.paused) {
+        currentAudio.play();
+        button.innerHTML = '⏸';
+        button.classList.add('active');
+        songItem.classList.add('playing');
+        return;
+    }
+
+    if (currentAudio) {
+        currentAudio.pause();
+        resetSongUI(currentSongId);
+    }
+
+    let previewUrl = button.getAttribute('data-preview-url');
+
+    if (!previewUrl || previewUrl === 'null') {
+        button.innerHTML = '<span class="loading-spinner">⏳</span>';
+        button.disabled = true;
+
+        previewUrl = await searchDeezerTrack(songTitle, songArtist);
+
+        button.setAttribute('data-preview-url', previewUrl || 'null');
+        button.disabled = false;
+
+        if (!previewUrl) {
+            button.innerHTML = '🚫';
+            button.title = 'Preview unavailable';
+            button.disabled = true;
+            showToast('Preview not available for this song');
+            return;
+        }
+    }
+
+    try {
+        currentAudio = new Audio(previewUrl);
+        currentSongId = songId;
+
+        playlistQueue = [];
+        currentQueueIndex = -1;
+
+        button.innerHTML = '⏸';
+        button.classList.add('active');
+        songItem.classList.add('playing');
+
+        const playlist = playlists.find(p => p.songs.some(s => s.id === songId));
+        const song = playlist?.songs.find(s => s.id === songId);
+        if (playlist && song) {
+            updateNowPlaying(playlist, song);
+        }
+
+        await currentAudio.play();
+
+        currentAudio.onended = () => {
+            resetSongUI(songId);
+            currentAudio = null;
+            currentSongId = null;
+            hideNowPlaying();
+        };
+
+        currentAudio.onerror = () => {
+            console.error('Audio playback error');
+            showToast('Playback failed');
+            resetSongUI(songId);
+            currentAudio = null;
+            currentSongId = null;
+            hideNowPlaying();
+        };
+
+    } catch (error) {
+        console.error('Error playing audio:', error);
+        showToast('Unable to play audio');
+        resetSongUI(songId);
+        currentAudio = null;
+        currentSongId = null;
+    }
+}
+
+
+async function playPlaylist(playlist) {
+    if (currentAudio) {
+        currentAudio.pause();
+        resetSongUI(currentSongId);
+    }
+
+    playlistQueue = [...playlist.songs];
+    currentQueueIndex = 0;
+    currentPlaylist = playlist;
+
+    updatePlayAllButton(playlist.playlistID, true);
+
+    await playNextInQueue();
+}
+
+function stopPlaylist() {
+    const stoppedPlaylistId = currentPlaylist?.playlistID;
+
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+
+    if (currentSongId) {
+        resetSongUI(currentSongId);
+        currentSongId = null;
+    }
+
+    playlistQueue = [];
+    currentQueueIndex = -1;
+
+    hideNowPlaying();
+
+    if (stoppedPlaylistId) {
+        updatePlayAllButton(stoppedPlaylistId, false);
+    }
+
+    currentPlaylist = null;
+}
+
+function updatePlayAllButton(playlistId, isPlaying) {
+    const playAllBtn = document.getElementById('playAllBtn');
+    if (!playAllBtn) return;
+
+    const modalTitle = document.getElementById('modalPlaylistName');
+    const playlistName = modalTitle?.textContent;
+    const modalPlaylist = playlists.find(p => p.playlist_name === playlistName);
+
+    if (modalPlaylist?.playlistID === playlistId) {
+        if (isPlaying) {
+            playAllBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16"/>
+                    <rect x="14" y="4" width="4" height="16"/>
+                </svg>
+            `;
+            playAllBtn.classList.add('playing');
+            playAllBtn.title = 'Stop playlist';
+        } else {
+            playAllBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+            `;
+            playAllBtn.classList.remove('playing');
+            playAllBtn.title = 'Play all songs';
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadPlaylists();
     setupEventListeners();
     setupSearchListeners();
     setupSortListeners();
+    setupNowPlayingListeners();
 });
+
+function setupNowPlayingListeners() {
+    setupSharedNowPlayingListeners();
+
+    const playAllBtn = document.getElementById('playAllBtn');
+    playAllBtn?.addEventListener('click', () => {
+        const modalTitle = document.getElementById('modalPlaylistName');
+        const playlistName = modalTitle?.textContent;
+        const playlist = playlists.find(p => p.playlist_name === playlistName);
+
+        if (playlist) {
+            if (playlistQueue.length > 0 && currentPlaylist?.playlistID === playlist.playlistID) {
+                stopPlaylist();
+            } else {
+                playPlaylist(playlist);
+            }
+        }
+    });
+}

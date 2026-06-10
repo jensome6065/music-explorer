@@ -571,3 +571,229 @@ Generate a 2-3 sentence description for a music playlist that captures its overa
 - Sticky cover keeps playlist identity visible while browsing songs
 - Clean, focused presentation (no cards, no modals, no interactions)
 - Consistent typography and spacing with rest of app
+
+---
+
+#### STRETCH: Audio Playback (30-Second Previews)
+
+**Goal:** Allow users to play 30-second preview clips of songs directly in the browser using Deezer's preview URLs.
+
+**Data Shape Updates:**
+
+**Song Object (Extended):**
+- Add `preview_url` (string|null) — URL to 30-second audio preview clip from Deezer
+- Note: Not all songs have preview URLs (some older/indie tracks may return null)
+
+**Global State:**
+- `currentAudio` (Audio object|null) — HTML5 Audio element for currently playing song
+- `currentSongId` (number|null) — ID of currently playing song
+
+---
+
+**UI Components:**
+
+**Play/Pause Button:**
+- Appears as icon button on each song item (modal and featured page)
+- Icon states:
+  - ▶ (play) — when song is not playing
+  - ⏸ (pause) — when this song is playing
+- Position: Left side of song item, before song title
+- Styling: Purple (#8b5cf6) when active, gray when inactive
+- Disabled state: Gray with "Preview unavailable" tooltip when `preview_url` is null
+
+**Visual Feedback:**
+- Currently playing song highlighted with subtle purple background (rgba(139, 92, 246, 0.1))
+- Play button for active song shows pause icon
+- All other songs show play icon
+- Loading spinner briefly shown while fetching preview URL (first play only)
+
+**Behavior Rules:**
+- Only one song can play at a time across entire app
+- Clicking play on Song A while Song B is playing:
+  1. Stops Song B
+  2. Resets Song B's UI to play icon
+  3. Starts Song A
+  4. Updates Song A's UI to pause icon
+- Clicking pause on currently playing song stops it and resets UI
+- Song auto-stops at end of preview (30 seconds)
+- Preview URLs fetched on-demand (when user first clicks play)
+
+---
+
+**Function Specs:**
+
+##### `searchDeezerTrack(title, artist)`
+**Purpose:** Searches Deezer for a track and returns preview URL using JSONP to bypass CORS restrictions.
+
+**Inputs:**
+- `title` (string) — song title
+- `artist` (string) — artist name
+
+**Outputs:**
+- Returns: Promise resolving to preview URL string or null
+- Returns `null` if not found or API call fails
+
+**API Details:**
+- Endpoint: `https://api.deezer.com/search`
+- Query params: `q=${title} ${artist}&limit=1&output=jsonp&callback=${callbackName}`
+- Method: JSONP (dynamic script tag injection)
+- No authentication required (free public API)
+
+**Behavior:**
+- Uses JSONP workaround to avoid CORS restrictions
+- Creates unique callback function name per request: `deezerCallback_${timestamp}_${random}`
+- Dynamically injects script tag into document head
+- Cleans up callback function and script tag after response
+- URL-encodes query parameters
+- Takes first result (best match)
+- Extracts `preview` field from `data[0].preview`
+- Returns null if no results or missing preview
+
+**Error Handling:**
+- Script load error: Log error, clean up, return null
+- No results found: Log warning, return null
+- All errors handled gracefully (no exceptions thrown to caller)
+
+**Implementation Pattern:**
+```javascript
+const callbackName = `deezerCallback_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+
+window[callbackName] = (data) => {
+  delete window[callbackName];
+  document.head.removeChild(script);
+  resolve(data.data[0]?.preview || null);
+};
+
+const script = document.createElement('script');
+script.src = `https://api.deezer.com/search?q=${query}&limit=1&output=jsonp&callback=${callbackName}`;
+document.head.appendChild(script);
+```
+
+---
+
+##### `togglePlayPause(songId, songTitle, songArtist, button)`
+**Purpose:** Handles play/pause button clicks on song items.
+
+**Inputs:**
+- `songId` (number) — unique ID of the song
+- `songTitle` (string) — song title for Deezer search
+- `songArtist` (string) — artist name for Deezer search
+- `button` (DOM element) — the play button that was clicked
+
+**Outputs/Effects:**
+- Returns: Promise (async function)
+- Side effects: plays/pauses audio, updates UI, fetches preview URL if needed
+
+**Branch 1: This Song is Currently Playing and Not Paused**
+- Pause `currentAudio`
+- Update this song's play button to play icon (▶)
+- Remove `.playing` class from song item
+- Return early (keep audio object for resume)
+
+**Branch 2: This Song is Currently Playing but Paused**
+- Resume `currentAudio` playback
+- Update button to pause icon (⏸)
+- Add `.playing` class back to song item
+- Return early
+
+**Branch 3: Different Song Playing (or No Song Playing)**
+- If another song is playing:
+  - Pause `currentAudio`
+  - Reset old song's UI
+- Check if this song already has `preview_url` stored (data attribute on button)
+- If not:
+  - Show loading state on button (⏳ spinner)
+  - Disable button temporarily
+  - Call `searchDeezerTrack(title, artist)`
+  - Store result in button's data attribute
+  - Re-enable button
+- If `preview_url` is null:
+  - Disable button permanently
+  - Show 🚫 icon
+  - Set tooltip "Preview unavailable"
+  - Show toast notification
+  - Return early
+- Create new Audio element with `preview_url`
+- Clear `playlistQueue` (stops playlist mode when manually selecting a song)
+- Set global state (`currentAudio`, `currentSongId`)
+- Update button to pause icon (⏸)
+- Add `.playing` class to song item
+- Update now playing bar with playlist and song info
+- Start playback
+
+**Event Listeners (on audio element):**
+- `ended`: Reset UI when preview finishes, clear current song, hide now playing bar
+- `error`: Log error, show error toast, reset UI, clear current song, hide now playing bar
+
+---
+
+##### `resetSongUI(songId)`
+**Purpose:** Resets a song's play button and highlight to default state.
+
+**Inputs:**
+- `songId` (number) — song to reset
+
+**Outputs/Effects:**
+- Finds song item by `data-song-id` attribute
+- Changes play button icon to ▶
+- Removes `.playing` class from song item
+- Removes `.active` class from button
+
+---
+
+**Decisions Log:**
+
+**Why Deezer Instead of Spotify?**
+- Deezer API is free with no authentication required
+- Spotify requires OAuth2 Client Credentials flow (more complex)
+- Spotify requires app registration and API credentials
+- Deezer preview URLs are publicly accessible (no tokens needed)
+- Simpler for student projects (no secrets to manage)
+
+**Why JSONP Workaround?**
+- Deezer API has CORS restrictions that block direct `fetch()` calls from browsers
+- JSONP (JSON with Padding) bypasses CORS by loading data as a script
+- Older technique but still supported by Deezer's API (`output=jsonp` parameter)
+- Modern alternatives (proxy server, CORS proxy) would require additional infrastructure
+- Trade-off: Slightly less elegant code, but works without backend
+
+**How JSONP Works:**
+1. Create a unique global callback function name
+2. Add that function to `window` object
+3. Dynamically inject a `<script>` tag with the API URL + callback parameter
+4. Browser loads the script, which calls the callback with data
+5. Clean up: delete callback from `window`, remove script tag from DOM
+6. Return data through Promise resolution
+
+**Why not Web Playback SDK?**
+- Requires Spotify Premium for users
+- More complex OAuth flow with user login
+- Overkill for 30-second previews
+- HTML5 Audio is simpler and works for all users
+
+**Why On-Demand Preview Fetching?**
+- Reduces initial API calls (only fetch when user wants to play)
+- Faster page load
+- User may never play most songs
+- Trade-off: Slight delay on first play (mitigated with loading state)
+- Alternative considered: Pre-fetch all previews on modal open (too many API calls)
+
+**Why Single Global Audio Element?**
+- Browser best practice: only one audio context at a time
+- Prevents overlapping audio chaos
+- Simpler state management (one source of truth)
+- Matches expected UX (pause current when starting new)
+
+**Preview URL Storage:**
+- Stored in button's `data-preview-url` attribute after first fetch
+- Avoids duplicate API calls for same song
+- Not persisted across modal opens/closes (keeps code simple)
+- Alternative considered: Store in song object (more persistent, but mutates data)
+
+**Unique Callback Names:**
+- Each JSONP request generates unique callback: `deezerCallback_${timestamp}_${random}`
+- Prevents conflicts when multiple requests are made simultaneously
+- Timestamp + random string ensures uniqueness
+- Example: `deezerCallback_1686237465123_kj4n8x2p`
+
+---
