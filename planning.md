@@ -16,33 +16,46 @@
 - `artist` (string) — name of the artist who performed the song
 - `album` (string) — name of the album the song belongs to
 - `duration` (string) — length of the song in MM:SS format
+- `preview_url` (string|null, optional) — cached 30-second Deezer preview URL when available
 
 ### UI and Interaction Rules
-homepage
-- navigation bar
-- playlist grid
 
-playlist card interactions
-- clicking a playlist card
-- clicking outside the modal
+**Homepage layout and controls**
+- Navbar includes page links and theme toggle.
+- Main area includes search input, sort dropdown, and playlist grid.
+- Playlist grid supports loading skeletons, empty states, and error states.
 
-playlist detail modal
-- shuffle button
-- get description button
+**Card interactions**
+- Clicking a playlist card opens the playlist detail modal.
+- Clicking a heart icon toggles like state only and does not open modal.
+- Clicking edit/delete controls triggers management flows and does not open modal.
 
-like/heart icon rules
-- clikcing the heart icon on a playlist card
-- does not open the modal
-- immediately reflected in the UI
+**Playlist modal interactions**
+- Modal can be closed by close button or clicking overlay.
+- Modal action bar supports Play All, Shuffle, and Get Description.
+- Song items support play/pause preview controls.
 
-featured page interaction rules
-- displays one randomly selected playlist
-- on page load or refresh, new random selection is triggered
+**Playlist management interactions**
+- Floating action button opens Add Playlist form.
+- Edit opens same form pre-filled with existing playlist data.
+- Delete requires explicit confirmation before removal.
+- Form uses 3 steps: Details, Songs, Preview.
 
-website should be
-- intuitive
-- clean
-- modern
+**Featured page interactions**
+- Displays one randomly selected playlist on load.
+- Supports Play All, Shuffle, and Get Description actions.
+- Song items support play/pause preview controls.
+- Refreshing page triggers a new random featured selection.
+
+**Global playback behavior**
+- Only one audio stream plays at a time across the app.
+- Now Playing bar appears during playback with pause/resume and close controls.
+- Manual song play interrupts playlist queue mode.
+
+**Experience goals**
+- Intuitive
+- Clean
+- Modern
 
 ### Function Specs
 
@@ -363,6 +376,118 @@ Generate a 2-3 sentence description for a music playlist that captures its overa
 - Disable "Get Description" button while loading
 - Replace loading text with description or error message when complete
 
+### Spec Sync Updates (Implemented Features)
+
+These additions reflect features already implemented in the app and should be treated as active spec behavior.
+
+#### Homepage Controls and Discovery
+
+**Search:**
+- Search input filters playlists in real time as user types.
+- Search matches against:
+  - `playlist_name`
+  - song `title`
+  - song `artist`
+- Empty query restores full playlist list.
+- Clear button appears only when input has text.
+- Escape key clears search and returns focus to the search input.
+- If no matches are found, show dedicated "No playlists found" empty state with query hint.
+
+**Sort:**
+- Sort options:
+  - `Most Liked` (default): descending `likeCount`, then alphabetical playlist name as tie-breaker
+  - `Name (A-Z)`: ascending `playlist_name`
+  - `Recently Added`: descending `playlistID`, then alphabetical name tie-breaker
+- Sorting is always applied after filtering, so active search results stay sorted.
+
+**Loading and Empty States:**
+- Before playlist data is rendered, show skeleton card loaders.
+- If fetch fails, show friendly error message in card grid area.
+- If filtered/sorted result is empty, show no-results state (not blank layout).
+
+---
+
+#### Playlist CRUD (Client-Side)
+
+**Card-Level Actions:**
+- Each playlist card includes:
+  - Edit button
+  - Delete button
+- Clicking edit/delete does not open the playlist modal.
+
+**Delete Flow:**
+- Delete action opens confirmation dialog with playlist name.
+- Confirmed deletion:
+  - closes open modal if needed
+  - animates card removal
+  - removes playlist from in-memory `playlists` array
+  - re-renders current filtered/sorted view
+
+**Add/Edit Flow:**
+- Floating action button opens add playlist form modal.
+- Edit button opens same modal in edit mode.
+- Form is 3-step:
+  1. Playlist details (name, creator, cover URL)
+  2. Songs editor (dynamic song list with add/remove)
+  3. Preview step (read-only summary before save)
+- Validation:
+  - Step 1 requires all playlist-level fields
+  - Step 2 requires at least one complete song entry
+- Save behavior:
+  - Add mode creates new `playlistID` and `likeCount: 0`
+  - Edit mode updates existing playlist fields
+  - Both modes re-render current filtered/sorted view
+
+---
+
+#### Theme System
+
+**Dark Mode:**
+- Theme toggle is available in the navbar on both pages.
+- App reads saved preference from `localStorage` key `theme`.
+- If no saved preference exists, app uses system preference (`prefers-color-scheme`).
+- Toggling updates body class `dark-mode` and persists preference.
+- If user has no manual preference saved, app listens for system theme changes and auto-applies them.
+
+---
+
+#### Playback and Queue Behavior
+
+**Single Song Preview:**
+- Song rows include play/pause button (`▶` / `⏸`) and playing highlight.
+- First play fetches Deezer preview URL on demand; result is cached for reuse.
+- Missing preview disables button, shows unavailable icon, and displays toast feedback.
+
+**Play All Queue:**
+- Modal includes `Play All` button for current playlist.
+- Featured page includes `Play All` button for featured playlist.
+- Play All behavior:
+  - builds queue from playlist songs
+  - auto-advances on `ended`
+  - skips songs with unavailable previews
+  - can be stopped via same control (toggle behavior)
+- Manual song selection clears queue and switches to single-song mode.
+
+**Now Playing Bar:**
+- Global bar appears while playback is active.
+- Displays cover art, song title, and `artist • playlist`.
+- Includes global play/pause toggle and close button.
+- Close action stops current audio and clears queue/playback state.
+
+---
+
+#### Featured Page Enhancements
+
+- Featured page includes the same core action group as modal:
+  - Play All
+  - Shuffle
+  - Get Description
+- Shuffle affects featured-page song rendering only (does not mutate playlist source order).
+- Featured footer shows:
+  - song count
+  - computed total duration summary
+- Playlist cover/name/creator transitions use fade-in for smoother load experience.
+
 ### Decisions Log
 
 #### MILESTONE 1
@@ -569,12 +694,69 @@ Generate a 2-3 sentence description for a music playlist that captures its overa
 - Fresh random playlist every time user visits Featured page
 - Large cover image for visual impact
 - Sticky cover keeps playlist identity visible while browsing songs
-- Clean, focused presentation (no cards, no modals, no interactions)
+- Clean, focused presentation (no cards and no modal popups; interactions happen inline)
 - Consistent typography and spacing with rest of app
 
 ---
 
-#### STRETCH: Audio Playback (30-Second Previews)
+#### STRETCH: ADVANCED PLAYLIST DISCOVERY (SEARCH, SORT, FEEDBACK STATES)
+
+**Discovery and Browsing UX:**
+- Added real-time search across playlist names, song titles, and artists.
+- Added sort controls (Most Liked, Name A-Z, Recently Added) with deterministic tie-breakers.
+- Added dedicated no-results state and skeleton loading cards to improve perceived performance.
+
+**Reasoning:**
+- Search + sort reduce scanning time as playlist count grows.
+- Skeleton states communicate loading progress and reduce abrupt visual jumps.
+- Deterministic sorting avoids jumpiness for equal values.
+
+---
+
+#### STRETCH: PLAYLIST LIFECYCLE MANAGEMENT (CREATE, EDIT, DELETE)
+
+**Playlist Management:**
+- Added client-side Create/Edit/Delete playlist workflows.
+- Introduced floating action button for quick "Add Playlist" entry point.
+- Implemented 3-step guided form (Details, Songs, Preview) to lower cognitive load.
+- Added delete confirmation modal to prevent accidental destructive actions.
+
+**Reasoning:**
+- Multi-step form keeps each step focused and easier for beginner users.
+- Preview step reduces accidental bad submissions.
+- Confirmation dialog is required for safe deletion UX.
+
+---
+
+#### STRETCH: CONTINUOUS PLAYBACK SYSTEM (PLAY ALL, QUEUE, NOW PLAYING)
+
+**Playback System Expansion:**
+- Added global now-playing bar with media controls.
+- Added playlist queue playback ("Play All") in modal and featured views.
+- Added queue auto-advance and fallback skip behavior when song previews are unavailable.
+
+**Reasoning:**
+- Queue playback aligns better with playlist mental model than song-by-song clicks.
+- Global now-playing bar preserves context across long lists and scrolling.
+- Skip-on-missing-preview keeps playback resilient instead of failing hard.
+
+---
+
+#### STRETCH: EXPERIENCE POLISH (THEME PERSISTENCE + FEATURED ACTION PARITY)
+
+**Polish and Consistency:**
+- Added persistent dark mode with `localStorage`.
+- Added featured page action parity (Play All, Shuffle, AI Description).
+- Added featured metadata footer for song count and total duration.
+
+**Reasoning:**
+- Persistent theme preference improves comfort and user personalization.
+- Action parity reduces page-to-page behavior surprises.
+- Footer metadata gives faster playlist comprehension before playback.
+
+---
+
+#### STRETCH: AUDIO PREVIEW PLAYBACK (30-SECOND DEEZER CLIPS)
 
 **Goal:** Allow users to play 30-second preview clips of songs directly in the browser using Deezer's preview URLs.
 
