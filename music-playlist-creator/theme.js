@@ -1,13 +1,9 @@
-// Dark Mode Toggle Functionality
-
-// Check for saved theme preference or default to light mode
 function getThemePreference() {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
+    if (savedTheme === 'dark' || savedTheme === 'light') {
         return savedTheme;
     }
 
-    // Check system preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         return 'dark';
     }
@@ -15,48 +11,44 @@ function getThemePreference() {
     return 'light';
 }
 
-// Apply theme to the page
-function applyTheme(theme) {
+function applyTheme(theme, persistPreference = true) {
     if (theme === 'dark') {
         document.body.classList.add('dark-mode');
     } else {
         document.body.classList.remove('dark-mode');
     }
-    localStorage.setItem('theme', theme);
+    if (persistPreference) {
+        localStorage.setItem('theme', theme);
+    }
 }
 
-// Toggle between light and dark mode
 function toggleTheme() {
     const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    applyTheme(newTheme);
+    applyTheme(newTheme, true);
 }
 
-// Initialize theme on page load
 function initTheme() {
     const theme = getThemePreference();
-    applyTheme(theme);
+    // Initial/system-applied theme should not count as manual user preference.
+    applyTheme(theme, false);
 
-    // Set up toggle button
     const themeToggle = document.getElementById('themeToggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
 }
 
-// Run on DOM load
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initTheme);
 } else {
     initTheme();
 }
 
-// Listen for system theme changes
 if (window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only auto-switch if user hasn't manually set a preference
         if (!localStorage.getItem('theme')) {
-            applyTheme(e.matches ? 'dark' : 'light');
+            applyTheme(e.matches ? 'dark' : 'light', false);
         }
     });
 }

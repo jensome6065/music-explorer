@@ -202,7 +202,6 @@ function updateSong(index, field, value) {
     }
 }
 
-// Preview
 function renderPreview() {
     const name = document.getElementById('playlistName').value;
     const creator = document.getElementById('playlistCreator').value;

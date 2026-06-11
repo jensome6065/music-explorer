@@ -480,6 +480,11 @@ function setupEventListeners() {
             return;
         }
 
+        // Card action buttons are handled in playlist-manager.js and should not open details modal.
+        if (e.target.closest('.card-delete-btn') || e.target.closest('.card-edit-btn')) {
+            return;
+        }
+
         const card = e.target.closest('.playlist-card');
         if (card) {
             const playlistID = parseInt(card.getAttribute('data-playlist-id'));
